@@ -62,22 +62,34 @@ export const Viewfinder: React.FC = () => {
   }, [permissionState.granted]);
 
   const handleSnap = async () => {
-    console.log('Snap triggered!', { location });
+    console.log('📸 [Snap] Snap triggered!', { 
+      location,
+      cameraGranted: permissionState.granted,
+      streamActive: stream?.active,
+      videoElement: !!videoRef.current
+    });
     
     const snapResult = await triggerSnap();
     
     if (snapResult) {
+      console.log('📸 [Snap] Snap successful, transitioning to analyze...', {
+        snapId: snapResult.id,
+        hasImageData: !!snapResult.imageData,
+        imageSize: snapResult.imageData?.length
+      });
       setCapturedImageData(snapResult.imageData || null);
       recordSnapSuccess();
-      console.log('Snap successful, transitioning to analyze...', snapResult.id);
       
       // Transition to analyze view
       setShowAnalysisView(true);
       
       // Start analysis with image and location
       if (snapResult.imageData) {
+        console.log('🤖 [Analysis] Starting waste analysis...');
         await analyzeWaste(snapResult.imageData, location || undefined);
       }
+    } else {
+      console.error('📸 [Snap] Snap failed - no result returned');
     }
     
     resetIdleTimer(); // Reset idle state on interaction
@@ -131,9 +143,29 @@ export const Viewfinder: React.FC = () => {
   };
 
   const handleClearAnalysis = () => {
+    console.log('🔄 [Analysis] Clearing analysis and returning to camera view');
+    console.log('🔄 [Analysis] Camera state before clearing:', {
+      cameraGranted: permissionState.granted,
+      streamActive: stream?.active,
+      videoElement: !!videoRef.current,
+      videoSrcObject: !!videoRef.current?.srcObject
+    });
+    
     setShowAnalysisView(false);
     setCapturedImageData(null);
     clearAnalysis();
+    
+    // Check camera state after clearing
+    setTimeout(() => {
+      console.log('🔄 [Analysis] Camera state after clearing:', {
+        cameraGranted: permissionState.granted,
+        streamActive: stream?.active,
+        videoElement: !!videoRef.current,
+        videoSrcObject: !!videoRef.current?.srcObject,
+        videoReadyState: videoRef.current?.readyState,
+        videoPaused: videoRef.current?.paused
+      });
+    }, 100);
   };
 
   const handleUserInteraction = () => {
