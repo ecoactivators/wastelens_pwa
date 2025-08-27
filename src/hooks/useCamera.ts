@@ -8,7 +8,7 @@ export const useCamera = () => {
     loading: true,
   });
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  let videoRef = useRef<HTMLVideoElement>(null);
 
   const requestCameraAccess = async () => {
     if(!videoRef.current) {
