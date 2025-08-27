@@ -80,6 +80,8 @@ export const useCamera = () => {
     } else {
       console.log('🎥 [Camera] Stream is null');
     }
+  }, [stream]);
+
   // Debug video element state
   useEffect(() => {
     if (videoRef.current && stream) {
@@ -93,7 +95,7 @@ export const useCamera = () => {
       });
     }
   }, [stream, videoRef.current]);
-  }, [stream]);
+
   return {
     permissionState,
     stream,
