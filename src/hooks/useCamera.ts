@@ -7,12 +7,14 @@ export const useCamera = () => {
     denied: false,
     loading: true,
   });
-  //const [stream, setStream] = useState<MediaStream | null>(null);
-  //const videoRef = useRef<HTMLVideoElement>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const requestCameraAccess = async () => {
-    const [stream, setStream] = useState<MediaStream | null>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
+    if(!videoRef.current) {
+      videoRef = useRef<HTMLVideoElement>(null);
+    }
+    
     console.log('🎥 [useCamera] Requesting camera access...');
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
