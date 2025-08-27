@@ -11,7 +11,7 @@ export const useCamera = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const requestCameraAccess = async () => {
-    console.log('🎥 [Camera] Requesting camera access...');
+    console.log('🎥 [useCamera] Requesting camera access...');
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
       
@@ -23,9 +23,10 @@ export const useCamera = () => {
         }
       });
 
-      console.log('🎥 [Camera] Media stream obtained:', {
+      console.log('🎥 [useCamera] Media stream obtained:', {
         id: mediaStream.id,
-        active: mediaStream.active,
+        active: mediaStream.active,srcObject
+          
         tracks: mediaStream.getVideoTracks().length
       });
       setStream(mediaStream);
@@ -33,9 +34,9 @@ export const useCamera = () => {
 
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        console.log('🎥 [Camera] Stream attached to video element');
+        console.log('🎥 [useCamera] Stream attached to video element');
       } else {
-        console.warn('🎥 [Camera] Video ref not available when setting stream');
+        console.warn('🎥 [useCamera] Video ref not available when setting stream');
       }
     } catch (error) {
       console.error('Camera access denied:', error);
@@ -44,22 +45,22 @@ export const useCamera = () => {
   };
 
   const stopCamera = () => {
-    console.log('🎥 [Camera] Stopping camera...');
+    console.log('🎥 [useCamera] Stopping camera...');
     if (stream) {
-      console.log('🎥 [Camera] Stopping tracks:', stream.getVideoTracks().length);
+      console.log('🎥 [useCamera] Stopping tracks:', stream.getVideoTracks().length);
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
-      console.log('🎥 [Camera] Camera stopped and stream cleared');
+      console.log('🎥 [useCamera] Camera stopped and stream cleared');
     } else {
-      console.log('🎥 [Camera] No stream to stop');
+      console.log('🎥 [useCamera] No stream to stop');
     }
   };
 
   useEffect(() => {
-    console.log('🎥 [Camera] useCamera hook mounted, requesting access');
+    console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
     requestCameraAccess();
     return () => {
-      console.log('🎥 [Camera] useCamera hook unmounting, stopping camera');
+      console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
       stopCamera();
     };
   }, []);
@@ -67,7 +68,7 @@ export const useCamera = () => {
   // Debug stream state changes
   useEffect(() => {
     if (stream) {
-      console.log('🎥 [Camera] Stream state changed:', {
+      console.log('🎥 [useCamera] Stream state changed:', {
         id: stream.id,
         active: stream.active,
         tracks: stream.getVideoTracks().map(track => ({
@@ -78,7 +79,7 @@ export const useCamera = () => {
         }))
       });
     } else {
-      console.log('🎥 [Camera] Stream is null');
+      console.log('🎥 [useCamera] Stream is null');
     }
   }, [stream]);
 
@@ -86,7 +87,7 @@ export const useCamera = () => {
   useEffect(() => {
     if (videoRef.current && stream) {
       const video = videoRef.current;
-      console.log('🎥 [Camera] Video element state:', {
+      console.log('🎥 [useCamera] Video element state:', {
         videoWidth: video.videoWidth,
         videoHeight: video.videoHeight,
         readyState: video.readyState,
