@@ -11,11 +11,11 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
   const [showFlash, setShowFlash] = useState(false);
 
   const captureImage = useCallback(async (): Promise<string | null> => {
-    console.log('📸 [Capture] captureImage called');
+    console.log('📸 [useSnapCapture] captureImage called');
     if (!videoRef.current) return null;
 
     const video = videoRef.current;
-    console.log('📸 [Capture] Video element state:', {
+    console.log('📸 [useSnapCapture] Video element state:', {
       videoWidth: video.videoWidth,
       videoHeight: video.videoHeight,
       readyState: video.readyState,
@@ -28,7 +28,7 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
     const context = canvas.getContext('2d');
 
     if (!context) {
-      console.error('📸 [Capture] Failed to get canvas 2D context');
+      console.error('📸 [useSnapCapture] Failed to get canvas 2D context');
       return null;
     }
 
@@ -37,7 +37,7 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
     const videoWidth = video.videoWidth;
     const videoHeight = video.videoHeight;
     
-    console.log('📸 [Capture] Original video dimensions:', { videoWidth, videoHeight });
+    console.log('📸 [useSnapCapture] Original video dimensions:', { videoWidth, videoHeight });
     
     let scaledWidth = videoWidth;
     let scaledHeight = videoHeight;
@@ -54,7 +54,7 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
       }
     }
     
-    console.log('📸 [Capture] Scaled dimensions:', { scaledWidth, scaledHeight });
+    console.log('📸 [useSnapCapture] Scaled dimensions:', { scaledWidth, scaledHeight });
     
     // Set canvas dimensions to scaled size
     canvas.width = scaledWidth;
@@ -65,7 +65,7 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
 
     // Convert to base64 with reduced quality
     const dataURL = canvas.toDataURL('image/jpeg', 0.7);
-    console.log('📸 [Capture] Canvas to dataURL conversion complete:', {
+    console.log('📸 [useSnapCapture] Canvas to dataURL conversion complete:', {
       dataLength: dataURL.length,
       canvasWidth: canvas.width,
       canvasHeight: canvas.height
@@ -77,17 +77,17 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
   const triggerSnap = useCallback(async (): Promise<SnapMetadata | null> => {
     if (isCapturing) return null;
 
-    console.log('📸 [Capture] Starting snap capture process...');
+    console.log('📸 [useSnapCapture] Starting snap capture process...');
     setIsCapturing(true);
     setShowFlash(true);
 
     try {
       // Capture the image
-      console.log('📸 [Capture] Capturing image from video element...');
+      console.log('📸 [useSnapCapture] Capturing image from video element...');
       const imageData = await captureImage();
       
       if (!imageData) {
-        console.error('📸 [Capture] Failed to capture image - no data returned');
+        console.error('📸 [useSnapCapture] Failed to capture image - no data returned');
         throw new Error('Failed to capture image');
       }
 
@@ -109,7 +109,7 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
       existingSnaps.push(snapMetadata);
       localStorage.setItem('waste_lens_snaps', JSON.stringify(existingSnaps));
 
-      console.log('📸 [Capture] Snap metadata created and stored:', {
+      console.log('📸 [useSnapCapture] Snap metadata created and stored:', {
         id: snapMetadata.id,
         timestamp: snapMetadata.timestamp,
         hasLocation: !!(snapMetadata.latitude && snapMetadata.longitude),
@@ -119,11 +119,11 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
 
       return snapMetadata;
     } catch (error) {
-      console.error('📸 [Capture] Snap capture failed:', error);
+      console.error('📸 [useSnapCapture] Snap capture failed:', error);
       return null;
     } finally {
       // Hide flash after animation
-      console.log('📸 [Capture] Cleaning up capture state...');
+      console.log('📸 [useSnapCapture] Cleaning up capture state...');
       setTimeout(() => setShowFlash(false), 300);
       setTimeout(() => setIsCapturing(false), 500);
     }
