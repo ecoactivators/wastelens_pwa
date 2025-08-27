@@ -11,7 +11,7 @@ export const useCamera = () => {
     });
     const [stream, setStream] = useState<MediaStream | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-  }
+  };
   
   // const [permissionState, setPermissionState] = useState<CameraPermissionState>({
   //   granted: false,
