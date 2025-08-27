@@ -84,7 +84,7 @@ export const Viewfinder: React.FC = () => {
       
       // Start analysis with image and location
       if (snapResult.imageData) {
-        console.log('🤖 [Analysis] Starting waste analysis...');
+        console.log('🤖 [ViewFinder] Starting waste analysis...');
         await analyzeWaste(snapResult.imageData, location || undefined);
       }
     } else {
@@ -163,6 +163,7 @@ export const Viewfinder: React.FC = () => {
         videoReadyState: videoRef.current?.readyState,
         videoPaused: videoRef.current?.paused
       });
+      requestCameraAccess();
     }, 100);
   };
 
