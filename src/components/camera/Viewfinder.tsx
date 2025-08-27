@@ -152,6 +152,7 @@ export const Viewfinder: React.FC = () => {
     setShowAnalysisView(false);
     setCapturedImageData(null);
     clearAnalysis();
+    requestCameraAccess();
     
     // Check camera state after clearing
     setTimeout(() => {
