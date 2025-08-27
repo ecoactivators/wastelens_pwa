@@ -65,7 +65,6 @@ export const Viewfinder: React.FC = () => {
     console.log('📸 [Snap] Snap triggered!', { 
       location,
       cameraGranted: permissionState.granted,
-      streamActive: stream?.active,
       videoElement: !!videoRef.current
     });
     
@@ -146,7 +145,6 @@ export const Viewfinder: React.FC = () => {
     console.log('🔄 [Analysis] Clearing analysis and returning to camera view');
     console.log('🔄 [Analysis] Camera state before clearing:', {
       cameraGranted: permissionState.granted,
-      streamActive: stream?.active,
       videoElement: !!videoRef.current,
       videoSrcObject: !!videoRef.current?.srcObject
     });
