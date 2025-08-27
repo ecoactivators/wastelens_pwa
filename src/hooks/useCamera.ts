@@ -31,6 +31,8 @@ export const useCamera = () => {
       setStream(mediaStream);
       setPermissionState({ granted: true, denied: false, loading: false });
 
+      console.log('🎥 [useCamera] videoRef: ' + JSON.stringify(videoRef));
+      
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
         console.log('🎥 [useCamera] Stream attached to video element');
