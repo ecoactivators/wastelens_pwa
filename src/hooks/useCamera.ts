@@ -11,10 +11,6 @@ export const useCamera = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const requestCameraAccess = async () => {
-    // if(!videoRef.current) {
-    //   videoRef = useRef<HTMLVideoElement>(null);
-    // }
-
     if(!videoRef.current) {
       videoRef = useRef<HTMLVideoElement>(null);
     }
