@@ -157,7 +157,6 @@ export const Viewfinder: React.FC = () => {
     setTimeout(() => {
       console.log('🔄 [Analysis] Camera state after clearing:', {
         cameraGranted: permissionState.granted,
-        streamActive: stream?.active,
         videoElement: !!videoRef.current,
         videoSrcObject: !!videoRef.current?.srcObject,
         videoReadyState: videoRef.current?.readyState,
