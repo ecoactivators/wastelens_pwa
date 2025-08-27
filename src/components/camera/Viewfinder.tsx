@@ -163,7 +163,7 @@ export const Viewfinder: React.FC = () => {
         videoReadyState: videoRef.current?.readyState,
         videoPaused: videoRef.current?.paused
       });
-      requestCameraAccess();
+      //requestCameraAccess();
     }, 100);
   };
 
