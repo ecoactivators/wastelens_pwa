@@ -25,8 +25,7 @@ export const useCamera = () => {
 
       console.log('🎥 [useCamera] Media stream obtained:', {
         id: mediaStream.id,
-        active: mediaStream.active,srcObject
-          
+        active: mediaStream.active,srcObject,
         tracks: mediaStream.getVideoTracks().length
       });
       setStream(mediaStream);
