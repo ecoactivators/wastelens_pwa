@@ -3,7 +3,7 @@ import { CameraPermissionState } from '../types/waste';
 
 export const useCamera = () => {
 
-  const init() {
+  const init = () => {
     const [permissionState, setPermissionState] = useState<CameraPermissionState>({
       granted: false,
       denied: false,
