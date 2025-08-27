@@ -14,6 +14,13 @@ export const useCamera = () => {
     // if(!videoRef.current) {
     //   videoRef = useRef<HTMLVideoElement>(null);
     // }
+
+    if(!videoRef.current) {
+      videoRef = useRef<HTMLVideoElement>(null);
+    }
+    if(!stream){
+      setStream(useState<MediaStream | null>(null));
+    }
     
     console.log('🎥 [useCamera] Requesting camera access...');
     try {
