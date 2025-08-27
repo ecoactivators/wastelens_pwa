@@ -16,7 +16,7 @@ export const useCamera = () => {
       
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: { ideal: 'environment' }, // Force back camera
+          facingMode: { ideal: 'environment' }, // Prefer back camera
           width: { ideal: 1280 },
           height: { ideal: 720 }
         }
