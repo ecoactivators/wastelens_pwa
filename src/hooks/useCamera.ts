@@ -3,14 +3,18 @@ import { CameraPermissionState } from '../types/waste';
 
 export const useCamera = () => {
 
+  const [permissionState, setPermissionState];
+    const [stream, setStream];
+    const videoRef;
+
   const init = () => {
-    const [permissionState, setPermissionState] = useState<CameraPermissionState>({
+    setPermissionState(useState<CameraPermissionState>({
       granted: false,
       denied: false,
       loading: true,
-    });
-    const [stream, setStream] = useState<MediaStream | null>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
+    }));
+    setStream(useState<MediaStream | null>(null));
+    videoRef = useRef<HTMLVideoElement>(null);
   };
   
   // const [permissionState, setPermissionState] = useState<CameraPermissionState>({
