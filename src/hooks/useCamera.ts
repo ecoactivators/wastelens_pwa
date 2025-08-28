@@ -101,29 +101,23 @@ export const useCamera = () => {
   };
 
   useEffect(() => {
-    console.log('In new useEffect');
-    const checkVideoRef = () => {
+    console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
+    
+    // Use a small delay to ensure video element is mounted
+    const initTimer = setTimeout(() => {
       if (videoRef.current) {
-        console.log('Video element is ready');
-        console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
+        console.log('🎥 [useCamera] Video element is ready, requesting camera access');
         requestCameraAccess();
-        return () => {
-          console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
-          stopCamera();
-        };
-        // Perform operations
-        //return true;
+      } else {
+        console.warn('🎥 [useCamera] Video element still not ready after timeout');
       }
-      console.log('Video element NOT ready, returning false');
-      return false;
+    }, 100); // Reduced from 500ms to 100ms for faster initialization
+    
+    return () => {
+      console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
+      clearTimeout(initTimer);
+      stopCamera();
     };
-
-    if (!checkVideoRef()) {
-      console.log('about to set timeout');
-      // If not ready immediately, check again on next tick
-      const timeoutId = setTimeout(checkVideoRef, 500);
-      return () => clearTimeout(timeoutId);
-    }
   }, []);
 
   // useEffect(() => {
