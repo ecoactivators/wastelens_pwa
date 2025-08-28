@@ -57,24 +57,24 @@ export const useCamera = () => {
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
 
-      //console.log('🎥 [useCamera] Media stream: ' + mediaStream);
+      console.log('🎥 [useCamera] Media stream: ' + mediaStream);
       
-      // const mediaStream = await navigator.mediaDevices.getUserMedia({
-      //   video: {
-      //     facingMode: { ideal: 'environment' }, // Use back camera when available
-      //     width: { ideal: 1280 },
-      //     height: { ideal: 720 }
-      //   }
-      // });
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' }, // Use back camera when available
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      });
 
-      // console.log('🎥 [useCamera] Media stream: ' + mediaStream);
+      console.log('🎥 [useCamera] Media stream: ' + mediaStream);
 
-      // console.log('🎥 [useCamera] Media stream obtained:', {
-      //   id: mediaStream.id,
-      //   active: mediaStream.active,
-      //   tracks: mediaStream.getVideoTracks().length
-      // });
-      // setStream(mediaStream);
+      console.log('🎥 [useCamera] Media stream obtained:', {
+        id: mediaStream.id,
+        active: mediaStream.active,
+        tracks: mediaStream.getVideoTracks().length
+      });
+      setStream(mediaStream);
 
       //mediaStream = getMediaStream();
 
