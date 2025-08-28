@@ -46,7 +46,7 @@ export const useCamera = () => {
       tracks: mediaStream.getVideoTracks().length
     });
     
-    //return mediaStream;
+    return mediaStream;
   }
 
   const requestCameraAccess = async () => {
