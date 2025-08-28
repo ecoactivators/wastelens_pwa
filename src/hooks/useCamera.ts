@@ -66,6 +66,15 @@ export const useCamera = () => {
           height: { ideal: 720 }
         }
       });
+
+    console.log('🎥 [useCamera] Media stream: ' + mediaStream);
+
+    console.log('🎥 [useCamera] Media stream obtained:', {
+      id: ms.id,
+      active: ms.active,
+      tracks: ms.getVideoTracks().length
+    });
+     
      return ms;
   };
 
