@@ -48,7 +48,7 @@ export const useCamera = () => {
     });
     
     return ms;
-  }
+  };
 
   const requestCameraAccess = async () => {
     if(!videoRef.current) {
