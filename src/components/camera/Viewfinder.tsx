@@ -65,7 +65,8 @@ export const Viewfinder: React.FC = () => {
     console.log('📸 [Snap] Snap triggered!', { 
       location,
       cameraGranted: permissionState.granted,
-      videoElement: !!videoRef.current
+      videoElement: !!videoRef.current,
+      videoSrcObject: !!videoRef.current?.srcObject
     });
     
     const snapResult = await triggerSnap();
