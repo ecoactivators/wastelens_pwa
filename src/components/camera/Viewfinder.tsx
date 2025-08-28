@@ -87,12 +87,6 @@ export const Viewfinder: React.FC = () => {
       if (snapResult.imageData) {
         console.log('🤖 [ViewFinder] Starting waste analysis...');
         await analyzeWaste(snapResult.imageData, location || undefined);
-        console.log('📸 [Snap] Snap triggered! 5', { 
-          location,
-          cameraGranted: permissionState.granted,
-          videoElement: !!videoRef.current,
-          videoSrcObject: !!videoRef.current?.srcObject
-        });
       }
     } else {
       console.error('📸 [Snap] Snap failed - no result returned');
