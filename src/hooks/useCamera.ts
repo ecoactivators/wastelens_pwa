@@ -30,8 +30,8 @@ export const useCamera = () => {
   //init();
 
   const getMediaStream = async () => {
-    let mediaStream = useState<MediaStream | null>(null);
-    mediaStream = await navigator.mediaDevices.getUserMedia({
+    let ms = useState<MediaStream | null>(null);
+    ms = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: { ideal: 'environment' }, // Use back camera when available
           width: { ideal: 1280 },
@@ -42,12 +42,12 @@ export const useCamera = () => {
     console.log('🎥 [useCamera] Media stream: ' + mediaStream);
 
     console.log('🎥 [useCamera] Media stream obtained:', {
-      id: mediaStream.id,
-      active: mediaStream.active,
-      tracks: mediaStream.getVideoTracks().length
+      id: ms.id,
+      active: ms.active,
+      tracks: ms.getVideoTracks().length
     });
     
-    return mediaStream;
+    return ms;
   }
 
   const requestCameraAccess = async () => {
@@ -75,8 +75,8 @@ export const useCamera = () => {
       //   tracks: mediaStream.getVideoTracks().length
       // });
 
-      let ms = await getMediaStream();
-      setStream(ms);
+      const mediaStream = await getMediaStream();
+      setStream(mediaStream);
       //setStream(mediaStream);
       
       setPermissionState({ granted: true, denied: false, loading: false });
