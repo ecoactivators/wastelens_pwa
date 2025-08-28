@@ -36,11 +36,22 @@ export const useCamera = () => {
   };
 
   const requestCameraAccess = async () => {
-    if(!videoRef.current) {
-      //videoRef = useRef<HTMLVideoElement>(null);
+    console.log('🎥 [useCamera] Requesting camera access...');
+
+    try {
+      const permissionStatus = await navigator.permissions.query({
+        name: 'camera' as PermissionName
+      });
+
+      if (permissionStatus.state === 'denied') {
+        console.log('Camera permission has been denied');
+        return;
+      }
+    } catch (error) {
+      console.error('Error checking camera permissions:', error);
+      return;
     }
     
-    console.log('🎥 [useCamera] Requesting camera access...');
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
       
