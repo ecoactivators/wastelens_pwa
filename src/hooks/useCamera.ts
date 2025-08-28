@@ -27,38 +27,7 @@ export const useCamera = () => {
 
   //init();
 
-  const getMediaStream = async () => {
-    let ms = useState<MediaStream | null>(null);
-    ms = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: 'environment' }, // Use back camera when available
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
-      });
-
-    console.log('🎥 [useCamera] Media stream: ' + mediaStream);
-
-    console.log('🎥 [useCamera] Media stream obtained:', {
-      id: ms.id,
-      active: ms.active,
-      tracks: ms.getVideoTracks().length
-    });
-    
-    return ms;
-  };
-
-  const getMediaStream2 = async () => {
-    return await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: { ideal: 'environment' }, // Use back camera when available
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
-      });
-  };
-
-   const getMediaStream3 = async () => {
+   const getMediaStream = async () => {
     const ms = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: { ideal: 'environment' }, // Use back camera when available
@@ -95,7 +64,7 @@ export const useCamera = () => {
       //   }
       // });
 
-      const mediaStream = await getMediaStream3();
+      const mediaStream = await getMediaStream();
 
       console.log('🎥 [useCamera] Media stream: ' + mediaStream);
 
