@@ -101,16 +101,36 @@ export const useCamera = () => {
   };
 
   useEffect(() => {
-    console.log('🎥 [useCamera] IN NEW USE EFFECT');
-    if (videoRef.current) {
-      console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
-      requestCameraAccess();
-      return () => {
-        console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
-        stopCamera();
-      };
+    const checkVideoRef = () => {
+      if (videoRef.current) {
+        console.log('Video element is ready');
+        console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
+        requestCameraAccess();
+        return () => {
+          console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
+          stopCamera();
+        };
+        // Perform operations
+        //return true;
+      }
+      return false;
+    };
+
+    if (!checkVideoRef()) {
+      // If not ready immediately, check again on next tick
+      const timeoutId = setTimeout(checkVideoRef, 0);
+      return () => clearTimeout(timeoutId);
     }
-  }, [videoRef.current]);
+  }, []);
+
+  // useEffect(() => {
+  //   console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
+  //   requestCameraAccess();
+  //   return () => {
+  //     console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
+  //     stopCamera();
+  //   };
+  // }, []);
 
   // Debug stream state changes
   useEffect(() => {
