@@ -1,10 +1,17 @@
 import { WasteAnalysisResponse, LocationData } from '../types/waste';
 
 export class OpenAIService {
-  private functionUrl = '/.netlify/functions/analyze-waste';
+  private functionUrl: string;
+
+  constructor() {
+    // Use relative path for Netlify functions
+    this.functionUrl = '/.netlify/functions/analyze-waste';
+  }
 
   async analyzeWasteImage(imageData: string, location?: LocationData): Promise<WasteAnalysisResponse> {
     try {
+      console.log('Making request to:', this.functionUrl);
+      
       const response = await fetch(this.functionUrl, {
         method: 'POST',
         headers: {
@@ -17,6 +24,7 @@ export class OpenAIService {
       });
 
       if (!response.ok) {
+        console.error('API response not ok:', response.status, response.statusText);
         const errorData = await response.json().catch(() => ({}));
         throw new Error(`Analysis API error: ${response.status} ${response.statusText} - ${errorData.error || 'Unknown error'}`);
       }

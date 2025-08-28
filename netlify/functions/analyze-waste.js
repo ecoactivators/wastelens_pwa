@@ -41,13 +41,16 @@ exports.handler = async (event, context) => {
 
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
+      console.error('OpenAI API key not found in environment variables');
       return {
         statusCode: 500,
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': 'Content-Type'
         },
-        body: JSON.stringify({ error: 'OpenAI API key not configured' })
+        body: JSON.stringify({ 
+          error: 'OpenAI API key not configured. Please set OPENAI_API_KEY environment variable in your deployment settings.' 
+        })
       };
     }
 
