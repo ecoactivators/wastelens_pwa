@@ -113,11 +113,12 @@ export const useCamera = () => {
         // Perform operations
         //return true;
       }
+      console.log('Video element NOT ready, returning false');
       return false;
     };
 
     if (!checkVideoRef()) {
-      console.log('Video element NOT ready');
+      console.log('about to set timeout');
       // If not ready immediately, check again on next tick
       const timeoutId = setTimeout(checkVideoRef, 0);
       return () => clearTimeout(timeoutId);
