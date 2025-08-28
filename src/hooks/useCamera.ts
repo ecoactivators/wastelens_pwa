@@ -70,7 +70,7 @@ export const useCamera = () => {
       } else {
         console.warn('🎥 [useCamera] Video ref not available when setting stream');
         setTimeout(() => {
-          requestCameraAccess();
+          assignMediaStreamToSrc();
         }, 10);
       }
     } catch (error) {
