@@ -87,7 +87,7 @@ export const useCamera = () => {
     requestCameraAccess();
     return () => {
       console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
-      stopCamera();
+      //stopCamera(); %%%
     };
   }, []);
 
