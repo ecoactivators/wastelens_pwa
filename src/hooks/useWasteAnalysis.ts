@@ -12,6 +12,12 @@ export const useWasteAnalysis = () => {
     setError(null);
     setAnalysisResult(null);
 
+    console.log('📸 [useWasteAnalysis] analyzeWaste()', { 
+      videoElement: !!videoRef.current,
+      videoSrcObject: !!videoRef.current?.srcObject
+    });
+
+    // %%%
     try {
       const result = await openAIService.analyzeWasteImage(imageData, location);
       setAnalysisResult(result);
