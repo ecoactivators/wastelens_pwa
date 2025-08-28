@@ -64,29 +64,29 @@ export const useCamera = () => {
 
       console.log('🎥 [useCamera] videoRef.current: ' + videoRef.current);
 
-      const timer = setTimeout(() => {
-        assignMediaStreamToSrc();
-      }, 100);
-      // if (videoRef.current) {
-      //   videoRef.current.srcObject = mediaStream;
-      //   console.log('🎥 [useCamera] Stream attached to video element');
-      // } else {
-      //   console.warn('🎥 [useCamera] Video ref not available when setting stream');
-      // }
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+        console.log('🎥 [useCamera] Stream attached to video element');
+      } else {
+        console.warn('🎥 [useCamera] Video ref not available when setting stream');
+        const timer = setTimeout(() => {
+          requestCameraAccess();
+        }, 100);
+      }
     } catch (error) {
       console.error('Camera access denied:', error);
       setPermissionState({ granted: false, denied: true, loading: false });
     }
   };
 
-  const assignMediaStreamToSrc = () => {
-    if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        console.log('🎥 [useCamera] Stream attached to video element');
-      } else {
-        console.warn('🎥 [useCamera] Video ref not available when setting stream');
-      }
-  }
+  // const assignMediaStreamToSrc = () => {
+  //   if (videoRef.current) {
+  //       videoRef.current.srcObject = stream;
+  //       console.log('🎥 [useCamera] Stream attached to video element');
+  //     } else {
+  //       console.warn('🎥 [useCamera] Video ref not available when setting stream');
+  //     }
+  // }
 
   const stopCamera = () => {
     console.log('🎥 [useCamera] Stopping camera...');
