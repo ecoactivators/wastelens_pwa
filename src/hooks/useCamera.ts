@@ -103,31 +103,21 @@ export const useCamera = () => {
   useEffect(() => {
     console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
     
-    // Use a small delay to ensure video element is mounted
-    const initTimer = setTimeout(() => {
-      if (videoRef.current) {
-        console.log('🎥 [useCamera] Video element is ready, requesting camera access');
-        requestCameraAccess();
-      } else {
-        console.warn('🎥 [useCamera] Video element still not ready after timeout');
-      }
-    }, 100); // Reduced from 500ms to 100ms for faster initialization
+    requestCameraAccess();
     
     return () => {
       console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
-      clearTimeout(initTimer);
       stopCamera();
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
-  //   requestCameraAccess();
-  //   return () => {
-  //     console.log('🎥 [useCamera] useCamera hook unmounting, stopping camera');
-  //     stopCamera();
-  //   };
-  // }, []);
+  // Separate effect to handle attaching stream to video element when both are ready
+  useEffect(() => {
+    if (stream && videoRef.current && !videoRef.current.srcObject) {
+      console.log('🎥 [useCamera] Attaching stream to video element');
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream, videoRef.current]);
 
   // Debug stream state changes
   useEffect(() => {
