@@ -101,6 +101,7 @@ export const useCamera = () => {
   };
 
   useEffect(() => {
+    console.log('In new useEffect');
     const checkVideoRef = () => {
       if (videoRef.current) {
         console.log('Video element is ready');
