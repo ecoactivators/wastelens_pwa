@@ -62,7 +62,7 @@ export const Viewfinder: React.FC = () => {
   }, [permissionState.granted]);
 
   const handleSnap = async () => {
-    console.log('📸 [Snap] Snap triggered!', { 
+    console.log('📸 [Snap] Snap triggered! 1', { 
       location,
       cameraGranted: permissionState.granted,
       videoElement: !!videoRef.current,
@@ -70,6 +70,13 @@ export const Viewfinder: React.FC = () => {
     });
     
     const snapResult = await triggerSnap();
+
+    console.log('📸 [Snap] Snap triggered! 2', { 
+      location,
+      cameraGranted: permissionState.granted,
+      videoElement: !!videoRef.current,
+      videoSrcObject: !!videoRef.current?.srcObject
+    });
     
     if (snapResult) {
       console.log('📸 [Snap] Snap successful, transitioning to analyze...', {
@@ -79,9 +86,23 @@ export const Viewfinder: React.FC = () => {
       });
       setCapturedImageData(snapResult.imageData || null);
       recordSnapSuccess();
+
+      console.log('📸 [Snap] Snap triggered! 3', { 
+      location,
+      cameraGranted: permissionState.granted,
+      videoElement: !!videoRef.current,
+      videoSrcObject: !!videoRef.current?.srcObject
+    });
       
       // Transition to analyze view
       setShowAnalysisView(true);
+
+      console.log('📸 [Snap] Snap triggered! 4', { 
+      location,
+      cameraGranted: permissionState.granted,
+      videoElement: !!videoRef.current,
+      videoSrcObject: !!videoRef.current?.srcObject
+    });
       
       // Start analysis with image and location
       if (snapResult.imageData) {
