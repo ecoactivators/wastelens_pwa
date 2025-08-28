@@ -19,7 +19,7 @@ export const useCamera = () => {
         }
       });
 
-    console.log('🎥 [useCamera] Media stream obtained:', {
+    console.log('🎥 [useCamera] MS obtained:', {
       id: ms.id,
       active: ms.active,
       tracks: ms.getVideoTracks().length
@@ -47,6 +47,8 @@ export const useCamera = () => {
     
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
+
+      console.log('🎥 [useCamera] About to obtain media stream');
       
       const mediaStream = await getMediaStream();
 
