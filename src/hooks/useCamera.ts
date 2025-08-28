@@ -11,11 +11,6 @@ export const useCamera = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
    const getMediaStream = async () => {
-    console.log('🎥 [useCamera]');
-    console.log('🎥 [useCamera] ********************');
-    console.log('🎥 [useCamera] in getMediaStream()');
-    console.log('🎥 [useCamera] ********************');
-    console.log('🎥 [useCamera]');
     const ms = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: { ideal: 'environment' }, // Use back camera when available
@@ -23,8 +18,6 @@ export const useCamera = () => {
           height: { ideal: 720 }
         }
       });
-
-    console.log('🎥 [useCamera] Media stream: ' + ms);
 
     console.log('🎥 [useCamera] Media stream obtained:', {
       id: ms.id,
