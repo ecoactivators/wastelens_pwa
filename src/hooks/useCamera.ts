@@ -75,7 +75,7 @@ export const useCamera = () => {
       //   }
       // });
 
-      const mediaStream = return getMediaStream2();
+      const mediaStream = await getMediaStream2();
 
       console.log('🎥 [useCamera] Media stream: ' + mediaStream);
 
