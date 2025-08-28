@@ -24,12 +24,12 @@ export const useCamera = () => {
   });
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  let mediaStream = null;
+  //let mediaStream = null;
 
   //init();
 
   const getMediaStream = async () => {
-    mediaStream = await navigator.mediaDevices.getUserMedia({
+    let mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: { ideal: 'environment' }, // Use back camera when available
           width: { ideal: 1280 },
