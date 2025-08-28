@@ -122,7 +122,7 @@ export const useCamera = () => {
       console.log('about to set timeout');
       // If not ready immediately, check again on next tick
       const timeoutId = setTimeout(checkVideoRef, 50);
-      return () => clearTimeout(timeoutId);
+      //return () => clearTimeout(timeoutId);
     }
   }, []);
 
