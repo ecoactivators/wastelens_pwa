@@ -3,36 +3,33 @@ import { CameraPermissionState } from '../types/waste';
 
 export const useCamera = () => {
 
-  const [permissionState, setPermissionState] = null;
-    const [stream, setStream] = null;
-    const videoRef = null;
+  // const [permissionState, setPermissionState] = null;
+  //   const [stream, setStream] = null;
+  //   const videoRef = null;
 
-  const init = () => {
-    setPermissionState(useState<CameraPermissionState>({
-      granted: false,
-      denied: false,
-      loading: true,
-    }));
-    setStream(useState<MediaStream | null>(null));
-    videoRef = useRef<HTMLVideoElement>(null);
-  };
+  // const init = () => {
+  //   setPermissionState(useState<CameraPermissionState>({
+  //     granted: false,
+  //     denied: false,
+  //     loading: true,
+  //   }));
+  //   setStream(useState<MediaStream | null>(null));
+  //   videoRef = useRef<HTMLVideoElement>(null);
+  // };
   
-  // const [permissionState, setPermissionState] = useState<CameraPermissionState>({
-  //   granted: false,
-  //   denied: false,
-  //   loading: true,
-  // });
-  // const [stream, setStream] = useState<MediaStream | null>(null);
-  // const videoRef = useRef<HTMLVideoElement>(null);
+  const [permissionState, setPermissionState] = useState<CameraPermissionState>({
+    granted: false,
+    denied: false,
+    loading: true,
+  });
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  init();
+  //init();
 
   const requestCameraAccess = async () => {
     if(!videoRef.current) {
-      videoRef = useRef<HTMLVideoElement>(null);
-    }
-    if(!stream){
-      setStream(useState<MediaStream | null>(null));
+      //videoRef = useRef<HTMLVideoElement>(null);
     }
     
     console.log('🎥 [useCamera] Requesting camera access...');
