@@ -220,107 +220,103 @@ export const Viewfinder: React.FC = () => {
     );
   }
 
-  // Show analysis view if we're in analysis mode
-  if (showAnalysisView) {
-    console.log("!!!!!");
-    console.log("About to render analysis view");
-    console.log("!!!!!");
-    return (
-      <AnalysisResultDisplay
-        isAnalyzing={isAnalyzing}
-        analysisResult={analysisResult}
-        error={error}
-        capturedImage={capturedImageData}
-        onClearAnalysis={handleClearAnalysis}
-      />
-    );
-  }
-
-
-  console.log("#####");
-  console.log("About to render camera view");
-  console.log("#####");
   return (
-    <div 
-      className="relative min-h-screen bg-black overflow-hidden"
-      onTouchStart={handleUserInteraction}
-      onMouseMove={handleUserInteraction}
-    >
-      {/* Camera Video Feed */}
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-      
-      {/* Dark overlay for better UI visibility */}
-      <div className="absolute inset-0 bg-black/20"></div>
-      
-      {/* Flash Overlay */}
-      <FlashOverlay isVisible={showFlash} />
-      
-      {/* Viewfinder Overlay */}
-      <ViewfinderOverlay />
-      
-      {/* Idle Training */}
-      <IdleTraining isVisible={showIdleTraining} />
-      
-      {/* Snap Button */}
-      <SnapButton 
-        onSnap={handleSnap} 
-        disabled={!permissionState.granted} 
-        isCapturing={isCapturing}
-      />
-      
-      {/* Camera Roll Selection Button with Hover Text */}
-      <div className="absolute bottom-8 left-8 group">
-        <button
-          onClick={handleSelectFromCameraRoll}
-          className="w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-        >
-          <ImageIcon className="w-6 h-6 text-primary-accent-cyan" />
-          <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
-            Select Photo
-          </span>
-        </button>
-      </div>
-      
-      {/* Activate Hub Button with Hover Text */}
-      <div className="absolute bottom-8 right-8 group">
-        <button
-          onClick={() => {
-            console.log('Activate Hub clicked');
-            alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
-          }}
-          className="w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-        >
-          <Zap className="w-6 h-6 text-primary-accent-cyan" />
-          <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
-            Activate Hub
-          </span>
-        </button>
-      </div>
-      
-      {/* Hidden file input for camera roll selection */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        className="hidden"
-      />
-      
-      {/* PWA Install Prompt */}
-      <PWAInstallPrompt />
-      
-      {/* Status indicator for location (optional debug) */}
-      {location && (
-        <div className="absolute top-4 right-4 bg-primary-bg/80 backdrop-blur-sm rounded-lg px-3 py-1">
-          <p className="text-secondary-gold text-xs">📍 Location ready</p>
+    <>
+      {/* Camera View - Always rendered but hidden when showing analysis */}
+      <div 
+        className={`relative min-h-screen bg-black overflow-hidden ${
+          showAnalysisView ? 'hidden' : ''
+        }`}
+        onTouchStart={handleUserInteraction}
+        onMouseMove={handleUserInteraction}
+      >
+        {/* Camera Video Feed */}
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        
+        {/* Dark overlay for better UI visibility */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        
+        {/* Flash Overlay */}
+        <FlashOverlay isVisible={showFlash} />
+        
+        {/* Viewfinder Overlay */}
+        <ViewfinderOverlay />
+        
+        {/* Idle Training */}
+        <IdleTraining isVisible={showIdleTraining} />
+        
+        {/* Snap Button */}
+        <SnapButton 
+          onSnap={handleSnap} 
+          disabled={!permissionState.granted} 
+          isCapturing={isCapturing}
+        />
+        
+        {/* Camera Roll Selection Button with Hover Text */}
+        <div className="absolute bottom-8 left-8 group">
+          <button
+            onClick={handleSelectFromCameraRoll}
+            className="w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+          >
+            <ImageIcon className="w-6 h-6 text-primary-accent-cyan" />
+            <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
+              Select Photo
+            </span>
+          </button>
         </div>
+        
+        {/* Activate Hub Button with Hover Text */}
+        <div className="absolute bottom-8 right-8 group">
+          <button
+            onClick={() => {
+              console.log('Activate Hub clicked');
+              alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
+            }}
+            className="w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+          >
+            <Zap className="w-6 h-6 text-primary-accent-cyan" />
+            <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
+              Activate Hub
+            </span>
+          </button>
+        </div>
+        
+        {/* Hidden file input for camera roll selection */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+        />
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt />
+        
+        {/* Status indicator for location (optional debug) */}
+        {location && (
+          <div className="absolute top-4 right-4 bg-primary-bg/80 backdrop-blur-sm rounded-lg px-3 py-1">
+            <p className="text-secondary-gold text-xs">📍 Location ready</p>
+          </div>
+        )}
+      </div>
+
+      {/* Analysis View - Only rendered when needed */}
+      {showAnalysisView && (
+        <AnalysisResultDisplay
+          isAnalyzing={isAnalyzing}
+          analysisResult={analysisResult}
+          error={error}
+          capturedImage={capturedImageData}
+          onClearAnalysis={handleClearAnalysis}
+        />
       )}
-    </div>
+    </>
   );
 };
