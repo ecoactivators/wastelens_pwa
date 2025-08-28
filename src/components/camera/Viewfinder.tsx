@@ -180,10 +180,8 @@ export const Viewfinder: React.FC = () => {
     setShowAnalysisView(false);
     setCapturedImageData(null);
     clearAnalysis();
-    //requestCameraAccess();
-    //useCamera();
     
-    // Check camera state after clearing
+    // Re-request camera access after returning to viewfinder
     setTimeout(() => {
       console.log('🔄 [Analysis] Camera state after clearing:', {
         cameraGranted: permissionState.granted,
@@ -192,7 +190,12 @@ export const Viewfinder: React.FC = () => {
         videoReadyState: videoRef.current?.readyState,
         videoPaused: videoRef.current?.paused
       });
-      //requestCameraAccess();
+      
+      // If videoRef is available but has no stream, restart camera
+      if (videoRef.current && !videoRef.current.srcObject) {
+        console.log('🔄 [Analysis] Video element exists but no stream - restarting camera');
+        requestCameraAccess();
+      }
     }, 100);
   };
 
