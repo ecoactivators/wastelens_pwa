@@ -31,19 +31,19 @@ export const useCamera = () => {
   const requestCameraAccess = async () => {
     console.log('🎥 [useCamera] Requesting camera access...');
 
-    try {
-      const permissionStatus = await navigator.permissions.query({
-        name: 'camera' as PermissionName
-      });
+    // try {
+    //   const permissionStatus = await navigator.permissions.query({
+    //     name: 'camera' as PermissionName
+    //   });
 
-      if (permissionStatus.state === 'denied') {
-        console.log('Camera permission has been denied');
-        return;
-      }
-    } catch (error) {
-      console.error('Error checking camera permissions:', error);
-      return;
-    }
+    //   if (permissionStatus.state === 'denied') {
+    //     console.log('Camera permission has been denied');
+    //     return;
+    //   }
+    // } catch (error) {
+    //   console.error('Error checking camera permissions:', error);
+    //   return;
+    // }
     
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
