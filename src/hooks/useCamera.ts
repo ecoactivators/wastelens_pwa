@@ -10,8 +10,6 @@ export const useCamera = () => {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  //init();
-
    const getMediaStream = async () => {
     console.log('🎥 [useCamera]');
     console.log('🎥 [useCamera] ********************');
