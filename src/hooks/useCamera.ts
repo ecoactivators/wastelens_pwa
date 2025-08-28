@@ -71,7 +71,7 @@ export const useCamera = () => {
         console.warn('🎥 [useCamera] Video ref not available when setting stream');
         setTimeout(() => {
           requestCameraAccess();
-        }, 1);
+        }, 10);
       }
     } catch (error) {
       console.error('Camera access denied:', error);
