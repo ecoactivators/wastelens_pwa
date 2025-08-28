@@ -24,7 +24,7 @@ export const useCamera = () => {
   });
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const mediaStream = null;
+  let mediaStream = null;
 
   //init();
 
