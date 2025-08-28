@@ -46,7 +46,7 @@ export const useCamera = () => {
       tracks: mediaStream.getVideoTracks().length
     });
     
-    return mediaStream;
+    //return mediaStream;
   }
 
   const requestCameraAccess = async () => {
@@ -74,8 +74,8 @@ export const useCamera = () => {
       //   tracks: mediaStream.getVideoTracks().length
       // });
 
-     
-      setStream(getMediaStream());
+     getMediaStream();
+      setStream(mediaStream);
       //setStream(mediaStream);
       
       setPermissionState({ granted: true, denied: false, loading: false });
