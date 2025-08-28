@@ -69,9 +69,9 @@ export const useCamera = () => {
         console.log('🎥 [useCamera] Stream attached to video element');
       } else {
         console.warn('🎥 [useCamera] Video ref currently references no object so we can\'t set the stream');
-        setTimeout(() => {
-          assignMediaStreamToSrc();
-        }, 10);
+        // setTimeout(() => {
+        //   assignMediaStreamToSrc();
+        // }, 10);
       }
     } catch (error) {
       console.error('Camera access denied:', error);
@@ -79,14 +79,14 @@ export const useCamera = () => {
     }
   };
 
-  const assignMediaStreamToSrc = () => {
-    if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        console.log('🎥 [useCamera] Stream attached to video element');
-      } else {
-        console.warn('🎥 [useCamera] Video ref currently references no object so we can\'t set the stream');
-      }
-  }
+  // const assignMediaStreamToSrc = () => {
+  //   if (videoRef.current) {
+  //       videoRef.current.srcObject = stream;
+  //       console.log('🎥 [useCamera] Stream attached to video element');
+  //     } else {
+  //       console.warn('🎥 [useCamera] Video ref currently references no object so we can\'t set the stream');
+  //     }
+  // }
 
   const stopCamera = () => {
     console.log('🎥 [useCamera] Stopping camera...');
@@ -101,6 +101,7 @@ export const useCamera = () => {
   };
 
   useEffect(() => {
+    console.log('🎥 [useCamera] IN NEW USE EFFECT');
     if (videoRef.current) {
       console.log('🎥 [useCamera] useCamera hook mounted, requesting access');
       requestCameraAccess();
