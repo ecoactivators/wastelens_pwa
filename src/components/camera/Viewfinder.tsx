@@ -222,6 +222,9 @@ export const Viewfinder: React.FC = () => {
 
   // Show analysis view if we're in analysis mode
   if (showAnalysisView) {
+    console.log("!!!!!");
+    console.log("About to render analysis view");
+    console.log("!!!!!");
     return (
       <AnalysisResultDisplay
         isAnalyzing={isAnalyzing}
@@ -233,6 +236,10 @@ export const Viewfinder: React.FC = () => {
     );
   }
 
+
+  console.log("#####");
+  console.log("About to render camera view");
+  console.log("#####");
   return (
     <div 
       className="relative min-h-screen bg-black overflow-hidden"
