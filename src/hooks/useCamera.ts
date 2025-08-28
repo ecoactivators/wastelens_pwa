@@ -74,9 +74,9 @@ export const useCamera = () => {
       //   tracks: mediaStream.getVideoTracks().length
       // });
 
-      let mediaStream = getMediaStream();
-      
-      setStream(mediaStream);
+     
+      setStream(getMediaStream());
+      //setStream(mediaStream);
       
       setPermissionState({ granted: true, denied: false, loading: false });
 
