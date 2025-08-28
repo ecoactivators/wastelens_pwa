@@ -56,8 +56,6 @@ export const useCamera = () => {
     console.log('🎥 [useCamera] Requesting camera access...');
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
-
-      console.log('🎥 [useCamera] Media stream: ' + mediaStream);
       
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
