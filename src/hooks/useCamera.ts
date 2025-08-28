@@ -28,6 +28,11 @@ export const useCamera = () => {
   //init();
 
    const getMediaStream = async () => {
+    console.log('🎥 [useCamera]');
+    console.log('🎥 [useCamera] ********************');
+    console.log('🎥 [useCamera] Media stream: ' + ms);
+    console.log('🎥 [useCamera] ********************');
+    console.log('🎥 [useCamera]');
     const ms = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: { ideal: 'environment' }, // Use back camera when available
