@@ -29,7 +29,7 @@ export const useCamera = () => {
   //init();
 
   const setMediaStream = async () => {
-    const mediaStream = await navigator.mediaDevices.getUserMedia({
+    mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: { ideal: 'environment' }, // Use back camera when available
           width: { ideal: 1280 },
