@@ -74,7 +74,7 @@ export const useCamera = () => {
       //   tracks: mediaStream.getVideoTracks().length
       // });
 
-     getMediaStream();
+      let ms = await getMediaStream();
       setStream(mediaStream);
       //setStream(mediaStream);
       
