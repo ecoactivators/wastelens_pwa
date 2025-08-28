@@ -67,7 +67,7 @@ export const useCamera = () => {
         }
       });
 
-    console.log('🎥 [useCamera] Media stream: ' + mediaStream);
+    console.log('🎥 [useCamera] Media stream: ' + ms);
 
     console.log('🎥 [useCamera] Media stream obtained:', {
       id: ms.id,
