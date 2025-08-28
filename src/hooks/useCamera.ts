@@ -36,7 +36,7 @@ export const useCamera = () => {
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
 
-      console.log('🎥 [useCamera] Media stream: ' + mediaStream);
+      //console.log('🎥 [useCamera] Media stream: ' + mediaStream);
       
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
@@ -45,6 +45,8 @@ export const useCamera = () => {
           height: { ideal: 720 }
         }
       });
+
+      console.log('🎥 [useCamera] Media stream: ' + mediaStream);
 
       console.log('🎥 [useCamera] Media stream obtained:', {
         id: mediaStream.id,
