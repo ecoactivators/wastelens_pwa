@@ -5,7 +5,7 @@ export class OpenAIService {
 
   constructor() {
     // Get API key from environment variable
-    this.apiKey = import.meta.env.VITE_OPENAI_API_KEY || '';
+    this.apiKey = (import.meta.env?.VITE_OPENAI_API_KEY as string) || '';
     
     if (!this.apiKey) {
       console.warn('OpenAI API key not found. Analysis features will not work.');
