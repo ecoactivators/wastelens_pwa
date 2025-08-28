@@ -24,8 +24,6 @@ export const useCamera = () => {
   });
   const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  //let mediaStream = null;
-  //const mediaStream = useState<MediaStream | null>(null);
 
   //init();
 
@@ -59,25 +57,25 @@ export const useCamera = () => {
     try {
       setPermissionState({ granted: false, denied: false, loading: true });
       
-      // const mediaStream = await navigator.mediaDevices.getUserMedia({
-      //   video: {
-      //     facingMode: { ideal: 'environment' }, // Use back camera when available
-      //     width: { ideal: 1280 },
-      //     height: { ideal: 720 }
-      //   }
-      // });
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' }, // Use back camera when available
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      });
 
-      // console.log('🎥 [useCamera] Media stream: ' + mediaStream);
+      console.log('🎥 [useCamera] Media stream: ' + mediaStream);
 
-      // console.log('🎥 [useCamera] Media stream obtained:', {
-      //   id: mediaStream.id,
-      //   active: mediaStream.active,
-      //   tracks: mediaStream.getVideoTracks().length
-      // });
+      console.log('🎥 [useCamera] Media stream obtained:', {
+        id: mediaStream.id,
+        active: mediaStream.active,
+        tracks: mediaStream.getVideoTracks().length
+      });
 
-      const mediaStream = await getMediaStream();
+      //const mediaStream = await getMediaStream();
+      
       setStream(mediaStream);
-      //setStream(mediaStream);
       
       setPermissionState({ granted: true, denied: false, loading: false });
 
