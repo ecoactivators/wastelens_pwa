@@ -58,6 +58,17 @@ export const useCamera = () => {
       });
   };
 
+   const getMediaStream3 = async () => {
+    const ms = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' }, // Use back camera when available
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      });
+     return ms;
+  };
+
   const requestCameraAccess = async () => {
     if(!videoRef.current) {
       //videoRef = useRef<HTMLVideoElement>(null);
@@ -75,7 +86,7 @@ export const useCamera = () => {
       //   }
       // });
 
-      const mediaStream = await getMediaStream2();
+      const mediaStream = await getMediaStream3();
 
       console.log('🎥 [useCamera] Media stream: ' + mediaStream);
 
