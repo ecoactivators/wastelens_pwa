@@ -1,2 +1,2 @@
 # OpenAI Configuration
-VITE_OPENAI_API_KEY=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
+VITE_OPENAI_API_KEY=sk-proj-your_new_api_key_here
