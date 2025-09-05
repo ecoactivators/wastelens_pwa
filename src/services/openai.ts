@@ -97,7 +97,15 @@ export class OpenAIService {
       // Parse JSON response
       let result: WasteAnalysisResponse;
       try {
-        result = JSON.parse(content);
+        // Clean the content by removing potential markdown code blocks and trimming whitespace
+        const cleanedContent = content
+          .trim()
+          .replace(/^```json\s*/, '')  // Remove opening ```json
+          .replace(/^```\s*/, '')      // Remove opening ```
+          .replace(/\s*```$/, '')      // Remove closing ```
+          .trim();
+        
+        result = JSON.parse(cleanedContent);
       } catch (parseError) {
         console.error('Failed to parse OpenAI response:', content);
         // Fallback if JSON parsing fails
