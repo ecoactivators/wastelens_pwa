@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect, createContext, useContext } from 'react';
 
 export interface User {
