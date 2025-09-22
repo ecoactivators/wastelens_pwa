@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuthInternal();
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+  return React.createElement(AuthContext.Provider, { value: auth }, children);
 };
 
 export const useAuth = (): AuthContextType => {
