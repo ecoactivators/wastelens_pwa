@@ -30,6 +30,7 @@ export class OpenAIService {
         },
         body: JSON.stringify({
           model: 'gpt-4o',
+          response_format: { type: "json_object" },
           messages: [
             {
               role: 'user',
