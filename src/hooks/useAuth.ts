@@ -108,6 +108,9 @@ export const useAuth = () => {
       loading: false,
     });
     console.log('User logged out');
+    
+    // Force a page reload to ensure clean state
+    window.location.reload();
   };
 
   return {
