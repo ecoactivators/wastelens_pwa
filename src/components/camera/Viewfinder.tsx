@@ -250,14 +250,22 @@ export const Viewfinder: React.FC = () => {
         <div className="absolute bottom-8 right-8 group">
           <button
             onClick={() => {
+              if (isGuestUser) {
+                return; // Do nothing for guest users
+              }
               console.log('Activate Hub clicked');
               alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
             }}
-            className="w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+            className={`w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 ${
+              isGuestUser 
+                ? 'border-gray-500 cursor-not-allowed opacity-50' 
+                : 'border-primary-accent-cyan hover:shadow-xl hover:scale-105'
+            }`}
+            disabled={isGuestUser}
           >
-            <Zap className="w-6 h-6 text-primary-accent-cyan" />
-            <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
-              Activate Hub
+            <Zap className={`w-6 h-6 ${isGuestUser ? 'text-gray-500' : 'text-primary-accent-cyan'}`} />
+            <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap bg-primary-bg/90 px-2 py-1 rounded">
+              {isGuestUser ? 'You must be logged in to use this feature' : 'Activate Hub'}
             </span>
           </button>
         </div>
