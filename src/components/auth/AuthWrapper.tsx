@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { LoginPage } from './LoginPage';
 import { SignupPage } from './SignupPage';
@@ -12,6 +12,13 @@ type AuthView = 'login' | 'signup';
 export const AuthWrapper: React.FC<AuthWrapperProps> = ({ children }) => {
   const { isAuthenticated, loading, login, signup } = useAuth();
   const [currentView, setCurrentView] = useState<AuthView>('login');
+
+  // Reset to login page when user logs out
+  useEffect(() => {
+    if (!isAuthenticated && !loading) {
+      setCurrentView('login');
+    }
+  }, [isAuthenticated, loading]);
 
   // Show loading screen while checking authentication
   if (loading) {
