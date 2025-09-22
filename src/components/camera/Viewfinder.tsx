@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { useCamera } from '../../hooks/useCamera';
 import { useLocation } from '../../hooks/useLocation';
 import { useSnapCapture } from '../../hooks/useSnapCapture';
@@ -11,9 +12,10 @@ import { SnapButton } from './SnapButton';
 import { FlashOverlay } from './FlashOverlay';
 import { PWAInstallPrompt } from '../PWAInstallPrompt';
 import { AnalysisResultDisplay } from '../AnalysisResultDisplay';
-import { ImageIcon, Zap } from 'lucide-react';
+import { ImageIcon, Zap, LogOut } from 'lucide-react';
 
 export const Viewfinder: React.FC = () => {
+  const { currentUser, logout } = useAuth();
   const { permissionState, videoRef, requestCameraAccess } = useCamera();
   const { location } = useLocation();
   const { isCapturing, showFlash, triggerSnap } = useSnapCapture({ videoRef, location });
@@ -278,6 +280,20 @@ export const Viewfinder: React.FC = () => {
             <p className="text-secondary-gold text-xs">📍 Location ready</p>
           </div>
         )}
+        
+        {/* User info and logout button */}
+        <div className="absolute top-4 left-4 bg-primary-bg/80 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center gap-2">
+          <p className="text-secondary-white text-xs">
+            Welcome, {currentUser?.username}
+          </p>
+          <button
+            onClick={logout}
+            className="text-secondary-gold hover:text-secondary-white transition-colors"
+            title="Sign Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Analysis View - Only rendered when needed */}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { AuthWrapper } from './components/auth/AuthWrapper';
 import { LoadingScreen } from './components/LoadingScreen';
 import { Viewfinder } from './components/camera/Viewfinder';
 
@@ -19,7 +20,11 @@ function App() {
     return <LoadingScreen />;
   }
 
-  return <Viewfinder />;
+  return (
+    <AuthWrapper>
+      <Viewfinder />
+    </AuthWrapper>
+  );
 }
 
 export default App;
