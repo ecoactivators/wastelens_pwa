@@ -20,7 +20,10 @@ export const Viewfinder: React.FC = () => {
   const { isCapturing, showFlash, triggerSnap } = useSnapCapture({ videoRef, location });
   const { recordSnapSuccess, updateActivity, shouldShowIdleTraining } = useWasteAgent();
   const { isAnalyzing, analysisResult, error, analyzeWaste, clearAnalysis } = useWasteAnalysis();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  
+  // Check if user is a guest
+  const isGuestUser = user?.username === 'Guest User';
   
   const [showIdleTraining, setShowIdleTraining] = useState(false);
   const [showAnalysisView, setShowAnalysisView] = useState(false);
