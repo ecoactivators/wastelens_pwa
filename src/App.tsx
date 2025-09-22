@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { LoadingScreen } from './components/LoadingScreen';
 import { Viewfinder } from './components/camera/Viewfinder';
 import { AuthWrapper } from './components/auth/AuthWrapper';
+import { AuthProvider } from './hooks/useAuth';
 
 function App() {
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
@@ -21,9 +22,11 @@ function App() {
   }
 
   return (
-    <AuthWrapper>
-      <Viewfinder />
-    </AuthWrapper>
+    <AuthProvider>
+      <AuthWrapper>
+        <Viewfinder />
+      </AuthWrapper>
+    </AuthProvider>
   );
 }
 
