@@ -45,10 +45,13 @@ export default {
         'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
         'hover-grow': 'hoverGrow 0.2s ease-out',
+        'flash': 'flash 0.3s ease-out',
+        'capture': 'capture 0.5s ease-out',
+        'subtle-grow': 'subtleGrow 3s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '0%': { opacity: '0' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         slideUp: {
@@ -66,6 +69,20 @@ export default {
         hoverGrow: {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(1.05)' },
+        },
+        flash: {
+          '0%': { opacity: '0' },
+          '50%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+        capture: {
+          '0%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(0.95)', opacity: '0.8' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        subtleGrow: {
+          '0%': { transform: 'scale(1)', opacity: '0.9' },
+          '100%': { transform: 'scale(1.05)', opacity: '1' },
         },
       },
       backdropBlur: {
@@ -91,6 +108,12 @@ export default {
           '&:hover': {
             '@apply shadow-lg transform scale-105': {},
             'box-shadow': '0 10px 25px rgba(204, 54, 165, 0.25)',
+          },
+        },
+        '.btn-outline-gold': {
+          '@apply px-4 py-2 border border-secondary-gold text-secondary-gold font-medium rounded-lg transition-all duration-300 ease-out': {},
+          '&:hover': {
+            '@apply bg-secondary-gold text-primary-bg': {},
           },
         },
       })
