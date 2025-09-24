@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, AlertTriangle, CheckCircle, Recycle, Trash2, Settings } from 'lucide-react';
 import { WasteAnalysisResponse } from '../types/waste';
+import { useAuth } from '../hooks/useAuth';
 
 interface AnalysisResultDisplayProps {
   isAnalyzing: boolean;
@@ -17,12 +18,15 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
   capturedImage,
   onClearAnalysis,
 }) => {
+  const { user } = useAuth();
   const [cardHeight, setCardHeight] = useState(33.33); // Start at 1/3 height (33.33%)
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [startHeight, setStartHeight] = useState(33.33);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Check if user is a guest
+  const isGuestUser = user?.username === 'Guest User';
   const getCategoryIcon = (category: string) => {
     switch (category.toLowerCase()) {
       case 'recyclable':
@@ -298,10 +302,19 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                 {/* Agent Handle Button */}
                 <button
                   onClick={() => {
+                    if (isGuestUser) {
+                      alert('You must be logged in to use this feature. Please log out and create an account or sign in.');
+                      return;
+                    }
                     console.log('Agent Handle triggered');
                     alert('Coming soon! Agentic AI experiences. Handled for you: resale management, shipping arrangement, pick-up coordination, and much more.');
                   }}
-                  className="btn-primary flex-1 min-w-0 px-4"
+                  className={`flex-1 min-w-0 px-4 py-4 font-semibold rounded-xl transition-all duration-300 ease-out ${
+                    isGuestUser
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-50'
+                      : 'bg-transparent border-2 border-primary-accent-cyan text-primary-accent-cyan hover:bg-primary-accent-cyan hover:text-secondary-white hover:scale-105'
+                  }`}
+                  disabled={isGuestUser}
                 >
                   Agent Handle
                 </button>
@@ -309,10 +322,19 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                 {/* Reward Hub Button */}
                 <button
                   onClick={() => {
+                    if (isGuestUser) {
+                      alert('You must be logged in to use this feature. Please log out and create an account or sign in.');
+                      return;
+                    }
                     console.log('Reward Hub triggered');
                     alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
                   }}
-                  className="btn-primary flex-1 min-w-0 px-4"
+                  className={`flex-1 min-w-0 px-4 py-4 font-semibold rounded-xl transition-all duration-300 ease-out ${
+                    isGuestUser
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-50'
+                      : 'bg-transparent border-2 border-primary-accent-cyan text-primary-accent-cyan hover:bg-primary-accent-cyan hover:text-secondary-white hover:scale-105'
+                  }`}
+                  disabled={isGuestUser}
                 >
                   Activate Hub
                 </button>

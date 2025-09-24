@@ -4,6 +4,7 @@ import { useLocation } from '../../hooks/useLocation';
 import { useSnapCapture } from '../../hooks/useSnapCapture';
 import { useWasteAgent } from '../../hooks/useWasteAgent';
 import { useWasteAnalysis } from '../../hooks/useWasteAnalysis';
+import { useAuth } from '../../hooks/useAuth';
 import { CameraPermissionPrompt } from './CameraPermissionPrompt';
 import { ViewfinderOverlay } from './ViewfinderOverlay';
 import { IdleTraining } from './IdleTraining';
@@ -11,7 +12,7 @@ import { SnapButton } from './SnapButton';
 import { FlashOverlay } from './FlashOverlay';
 import { PWAInstallPrompt } from '../PWAInstallPrompt';
 import { AnalysisResultDisplay } from '../AnalysisResultDisplay';
-import { ImageIcon, Zap } from 'lucide-react';
+import { ImageIcon, Zap, LogOut } from 'lucide-react';
 
 export const Viewfinder: React.FC = () => {
   const { permissionState, videoRef, requestCameraAccess } = useCamera();
@@ -19,6 +20,10 @@ export const Viewfinder: React.FC = () => {
   const { isCapturing, showFlash, triggerSnap } = useSnapCapture({ videoRef, location });
   const { recordSnapSuccess, updateActivity, shouldShowIdleTraining } = useWasteAgent();
   const { isAnalyzing, analysisResult, error, analyzeWaste, clearAnalysis } = useWasteAnalysis();
+  const { logout, user } = useAuth();
+  
+  // Check if user is a guest
+  const isGuestUser = user?.username === 'Guest User';
   
   const [showIdleTraining, setShowIdleTraining] = useState(false);
   const [showAnalysisView, setShowAnalysisView] = useState(false);
@@ -248,14 +253,22 @@ export const Viewfinder: React.FC = () => {
         <div className="absolute bottom-8 right-8 group">
           <button
             onClick={() => {
+              if (isGuestUser) {
+                return; // Do nothing for guest users
+              }
               console.log('Activate Hub clicked');
               alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
             }}
-            className="w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+            className={`w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 ${
+              isGuestUser 
+                ? 'border-gray-500 cursor-not-allowed opacity-50' 
+                : 'border-primary-accent-cyan hover:shadow-xl hover:scale-105'
+            }`}
+            disabled={isGuestUser}
           >
-            <Zap className="w-6 h-6 text-primary-accent-cyan" />
-            <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
-              Activate Hub
+            <Zap className={`w-6 h-6 ${isGuestUser ? 'text-gray-500' : 'text-primary-accent-cyan'}`} />
+            <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap bg-primary-bg/90 px-2 py-1 rounded">
+              {isGuestUser ? 'You must be logged in to use this feature' : 'Activate Hub'}
             </span>
           </button>
         </div>
@@ -278,6 +291,19 @@ export const Viewfinder: React.FC = () => {
             <p className="text-secondary-gold text-xs">📍 Location ready</p>
           </div>
         )}
+        
+        {/* Logout Button */}
+        <div className="absolute top-4 left-4 group">
+          <button
+            onClick={logout}
+            className="w-12 h-12 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-pink/30 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 hover:border-primary-accent-pink transition-all duration-300"
+          >
+            <LogOut className="w-5 h-5 text-primary-accent-pink" />
+          </button>
+          <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full left-1/2 transform -translate-x-1/2 whitespace-nowrap bg-primary-bg/90 px-2 py-1 rounded">
+            Logout
+          </span>
+        </div>
       </div>
 
       {/* Analysis View - Only rendered when needed */}
