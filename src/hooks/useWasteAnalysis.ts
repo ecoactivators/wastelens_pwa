@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { openAIService } from '../services/openai';
-import { WasteAnalysisResponse, LocationData } from '../types/waste';
+import { openAIService } from '../services/_openai.ts';
+import { WasteAnalysisResult, LocationData } from '../types/waste';
 
 export const useWasteAnalysis = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<WasteAnalysisResponse | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<WasteAnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const analyzeWaste = async (imageData: string, location?: LocationData): Promise<WasteAnalysisResponse | null> => {
+  const analyzeWaste = async (imageData: string, location?: LocationData): Promise<WasteAnalysisResult | null> => {
     setIsAnalyzing(true);
     setError(null);
     setAnalysisResult(null);

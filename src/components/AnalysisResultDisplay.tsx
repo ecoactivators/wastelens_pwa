@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, AlertTriangle, CheckCircle, Recycle, Trash2, Settings } from 'lucide-react';
-import { WasteAnalysisResponse } from '../types/waste';
+import { WasteAnalysisDisplayItem } from '../types/waste';
 
 interface AnalysisResultDisplayProps {
   isAnalyzing: boolean;
-  analysisResult: WasteAnalysisResponse | null;
+  analysisResult: WasteAnalysisDisplayItem | null;
   error: string | null;
   capturedImage: string | null;
   onClearAnalysis: () => void;

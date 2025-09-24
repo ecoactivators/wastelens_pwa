@@ -1,3 +1,5 @@
+import {MapSuggestion} from "../services/maps.ts";
+
 export interface SnapMetadata {
   id: string;
   timestamp: number;
@@ -18,7 +20,7 @@ export interface CameraPermissionState {
   loading: boolean;
 }
 
-export interface WasteAnalysisResult {
+export interface WasteAnalysisDisplayItem {
   wasteType: string;
   recyclable: boolean;
   confidence: number;
@@ -27,7 +29,7 @@ export interface WasteAnalysisResult {
   alternatives?: string[];
 }
 
-export interface WasteItem {
+export interface WasteAnalysisResultItem {
   itemName: string;
   wasteTypeTags: string[];
   wasteMaterial: string;
@@ -37,15 +39,36 @@ export interface WasteItem {
   confidenceScore: number;
   fixResultsOption: boolean;
   agentHandleEligible: boolean;
+
+  suggestions: string[];
+  mapSuggestions?: MapSuggestion[];
 }
 
-export interface WasteAnalysisResponse {
-  items: WasteItem[];
+// interface WasteAnalysisResult {
+//     itemName: string;
+//     quantity: number;
+//     weight: number;
+//     material: string;
+//     environmentScore: number;
+//     recyclable: boolean;
+//     compostable: boolean;
+//     carbonFootprint: number;
+//     suggestions: string[];
+//     mapSuggestions?: MapSuggestion[];
+//     confidence: number;
+// }
+
+// export interface WasteAnalysisResponse {
+//   items: WasteItem[];
+// }
+
+export interface WasteAnalysisResult {
+  items: WasteAnalysisResultItem[];
 }
 
 export interface AnalysisSession {
   id: string;
   snapId: string;
-  result: WasteAnalysisResponse;
+  result: WasteAnalysisResult;
   timestamp: number;
 }

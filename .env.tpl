@@ -1,2 +1,3 @@
 # OpenAI Configuration
 VITE_OPENAI_API_KEY=sk-proj-your_new_api_key_here
+EXPO_PUBLIC_OPENAI_API_KEY=sk-proj-your_new_api_key_here
