@@ -21,7 +21,7 @@ export const IdleTraining: React.FC<IdleTrainingProps> = ({ isVisible }) => {
         {/* Main training box */}
         <div className="bg-primary-bg border border-primary-accent-pink/20 rounded-2xl px-6 py-4 max-w-xs text-center shadow-lg backdrop-blur-sm">
           <p className="text-secondary-white text-base font-medium leading-relaxed">
-            Snap your trash
+            Snap your trash XXX
           </p>
         </div>
         

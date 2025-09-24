@@ -23,7 +23,7 @@ interface MapSuggestion {
 
 export class OpenAIService {
     private apiKey: string;
-    private baseUrl = 'https://api.openai.com/v1';
+    private baseUrl = 'https://api.openaixxx.com/v1';
     private requestTimeout = 30000; // 30 seconds
 
     constructor() {
@@ -713,6 +713,7 @@ Return your response as a JSON object with the same structure as before. Focus o
 
                         console.log('✅ [OpenAIService] Image converted to base64 successfully');
                         resolve(base64);
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     } catch (error) {
                         reject(new Error('Failed to process image data'));
                     }

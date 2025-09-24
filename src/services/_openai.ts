@@ -99,7 +99,7 @@ export class OpenAIService {
       // Parse JSON response
       let result: WasteAnalysisResult;
       try {
-        // Clean the content by removing potential markdown code blocks and trimming whitespace
+        // Clean the content by removing potential mark down code blocks and trimming whitespace
         const cleanedContent = content
           .trim()
           .replace(/^```json\s*/, '')  // Remove opening ```json

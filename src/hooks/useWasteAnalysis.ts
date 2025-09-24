@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { openAIService } from '../services/_openai.ts';
+import { openAIService } from '../services/openai.ts';
 import { WasteAnalysisResult, LocationData } from '../types/waste';
 
 export const useWasteAnalysis = () => {
