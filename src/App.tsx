@@ -1,4 +1,4 @@
-import React from 'react';
+//import React from 'react';
 import { useState, useEffect } from 'react';
 import { LoadingScreen } from './components/LoadingScreen';
 import { Viewfinder } from './components/camera/Viewfinder';

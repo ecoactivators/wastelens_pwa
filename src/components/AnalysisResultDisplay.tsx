@@ -250,9 +250,13 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
 
                   {/* Disposal Guidance */}
                   <div className="mb-4">
-                    <span className="text-sm text-brand-dark leading-relaxed">
-                      {item.disposalGuidance}
-                    </span>
+                    <ul style={{ listStyleType: "disc" }}>
+                      <span className="text-sm text-brand-dark leading-relaxed">
+                        {item.disposalGuidance.map((disposalGuidanceEntry, index) => (
+                            <li key={index}>{disposalGuidanceEntry}</li>
+                        ))}
+                      </span>
+                    </ul>
                   </div>
 
                   {/* Find Locations Button */}

@@ -32,7 +32,7 @@ export interface WasteItem {
   wasteTypeTags: string[];
   wasteMaterial: string;
   disposalCategory: string;
-  disposalGuidance: string;
+  disposalGuidance: string[];
   mapSearchTerm: string;
   confidenceScore: number;
   fixResultsOption: boolean;
