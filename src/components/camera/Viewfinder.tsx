@@ -23,6 +23,8 @@ export const Viewfinder: React.FC = () => {
   const [showIdleTraining, setShowIdleTraining] = useState(false);
   const [showAnalysisView, setShowAnalysisView] = useState(false);
   const [capturedImageData, setCapturedImageData] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   const [idleTimer, setIdleTimer] = useState<NodeJS.Timeout | null>(null);
   const [idleStartTime, setIdleStartTime] = useState<number>(Date.now());
   
