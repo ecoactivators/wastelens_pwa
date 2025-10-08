@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 //import { MapPin, AlertTriangle, CheckCircle, Recycle, Trash2, Settings } from 'lucide-react';
+<<<<<<< HEAD
 import {MapPin, AlertTriangle, ArrowLeft} from 'lucide-react';
+=======
+import { MapPin, AlertTriangle, ArrowLeft } from 'lucide-react';
+>>>>>>> c4542a03c51f514a734be6b80e121b466bf91c67
 import { WasteAnalysisResponse } from '../types/waste';
 
 interface AnalysisResultDisplayProps {
