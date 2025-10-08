@@ -10,6 +10,7 @@ export default {
           accent: {
             pink: '#cc36a5',
             cyan: '#1ed0f3',
+            green: '#00d500',
           }
         },
         secondary: {
@@ -17,6 +18,7 @@ export default {
           navy: '#013655',
           gold: '#e9d29b',
           white: '#ffffff',
+          green: '#00d500',
         },
         // Semantic color mappings for easier usage
         brand: {
@@ -26,6 +28,7 @@ export default {
           teal: '#14a1bb',
           navy: '#013655',
           gold: '#e9d29b',
+          green: '#00d500',
         }
       },
       fontFamily: {

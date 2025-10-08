@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MapPin, AlertTriangle, CheckCircle, Recycle, Trash2, Settings } from 'lucide-react';
+//import { MapPin, AlertTriangle, CheckCircle, Recycle, Trash2, Settings } from 'lucide-react';
+import { MapPin, AlertTriangle } from 'lucide-react';
 import { WasteAnalysisResponse } from '../types/waste';
 
 interface AnalysisResultDisplayProps {
@@ -23,21 +24,21 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
   const [startHeight, setStartHeight] = useState(33.33);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const getCategoryIcon = (category: string) => {
-    switch (category.toLowerCase()) {
-      case 'recyclable':
-      case 'recyclable (conditional)':
-        return <Recycle className="w-5 h-5 text-primary-accent-cyan" />;
-      case 'compostable':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case 'divert from landfill':
-        return <CheckCircle className="w-5 h-5 text-primary-accent-pink" />;
-      case 'special handling':
-        return <AlertTriangle className="w-5 h-5 text-secondary-gold" />;
-      default:
-        return <Trash2 className="w-5 h-5 text-gray-400" />;
-    }
-  };
+  // const getCategoryIcon = (category: string) => {
+  //   switch (category.toLowerCase()) {
+  //     case 'recyclable':
+  //     case 'recyclable (conditional)':
+  //       return <Recycle className="w-5 h-5 text-primary-accent-cyan" />;
+  //     case 'compostable':
+  //       return <CheckCircle className="w-5 h-5 text-green-500" />;
+  //     case 'divert from landfill':
+  //       return <CheckCircle className="w-5 h-5 text-primary-accent-pink" />;
+  //     case 'special handling':
+  //       return <AlertTriangle className="w-5 h-5 text-secondary-gold" />;
+  //     default:
+  //       return <Trash2 className="w-5 h-5 text-gray-400" />;
+  //   }
+  // };
 
   const getCategoryBorder = (category: string) => {
     switch (category.toLowerCase()) {
@@ -214,26 +215,26 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                   {/* Item Header */}
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      {getCategoryIcon(item.disposalCategory)}
+                      {/*{getCategoryIcon(item.disposalCategory)}*/}
                       <div>
                         <h3 className="text-lg font-semibold text-brand-dark">
                           {item.itemName}
                         </h3>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-xs text-secondary-gold mb-1">Confidence</div>
-                      <div className="text-sm font-semibold text-secondary-gold">
-                        {Math.round(item.confidenceScore * 100)}%
-                      </div>
-                    </div>
+                    {/*<div className="text-right">*/}
+                    {/*  <div className="text-xs text-secondary-gold mb-1">Confidence</div>*/}
+                    {/*  <div className="text-sm font-semibold text-secondary-gold">*/}
+                    {/*    {Math.round(item.confidenceScore * 100)}%*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
                   </div>
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-4">
                     <span className={`px-3 py-1 text-xs font-medium rounded-full ${
                       item.disposalCategory.toLowerCase() === 'special handling' 
-                        ? 'bg-primary-accent-pink text-secondary-white'
+                        ? 'bg-primary-accent-green text-secondary-white'
                         : 'bg-secondary-gold/20 text-secondary-gold'
                     }`}>
                       {item.disposalCategory}
@@ -273,18 +274,18 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                     </button>
                     
                     {/* Fix Results Button */}
-                    {item.fixResultsOption && (
-                      <button
-                        onClick={() => {
-                          console.log('Fix Results triggered for:', item.itemName);
-                          alert('Coming soon! You will be able to correct results.');
-                        }}
-                        className="px-4 py-2 bg-secondary-gold text-primary-bg font-medium rounded-lg transition-all duration-300 ease-out hover:shadow-lg hover:scale-105 flex items-center gap-1"
-                      >
-                        <Settings className="w-4 h-4" />
-                        <span className="text-xs">Fix</span>
-                      </button>
-                    )}
+                    {/*{item.fixResultsOption && (*/}
+                    {/*  <button*/}
+                    {/*    onClick={() => {*/}
+                    {/*      console.log('Fix Results triggered for:', item.itemName);*/}
+                    {/*      alert('Coming soon! You will be able to correct results.');*/}
+                    {/*    }}*/}
+                    {/*    className="px-4 py-2 bg-secondary-gold text-primary-bg font-medium rounded-lg transition-all duration-300 ease-out hover:shadow-lg hover:scale-105 flex items-center gap-1"*/}
+                    {/*  >*/}
+                    {/*    <Settings className="w-4 h-4" />*/}
+                    {/*    <span className="text-xs">Fix</span>*/}
+                    {/*  </button>*/}
+                    {/*)}*/}
                   </div>
                 </div>
               ))}
