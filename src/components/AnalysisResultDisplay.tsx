@@ -195,14 +195,16 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
             isDragging ? '' : 'transition-all duration-300 ease-out'
           }`}
           style={{ height: `${cardHeight}vh` }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onMouseDown={handleMouseDown}
         >
           {/* Drag Handle */}
-          <div className="flex justify-center pt-3 pb-2">
-            <div className="w-12 h-1 bg-gray-400 rounded-full cursor-grab active:cursor-grabbing"></div>
+          <div
+            className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+          >
+            <div className="w-12 h-1 bg-gray-400 rounded-full"></div>
           </div>
 
           {/* Scrollable Content */}
