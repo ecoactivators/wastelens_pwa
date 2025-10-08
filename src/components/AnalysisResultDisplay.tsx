@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 //import { MapPin, AlertTriangle, CheckCircle, Recycle, Trash2, Settings } from 'lucide-react';
-
 import { MapPin, AlertTriangle, ArrowLeft } from 'lucide-react';
 
 import { WasteAnalysisResponse } from '../types/waste';
@@ -103,7 +102,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    e.preventDefault(); // Prevent scrolling
+    //e.preventDefault(); // Prevent scrolling
     handleMove(e.touches[0].clientY);
   };
 
@@ -140,28 +139,25 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
     <div className="relative w-screen h-screen overflow-hidden select-none"
          style={{ WebkitUserDrag: 'none', userSelect: 'none', touchAction: 'none' } as React.CSSProperties}
          onDragStart={(e) => e.preventDefault()}
-         onTouchStart={(e) => e.preventDefault()}
+         //onTouchStart={(e) => e.preventDefault()}
          onMouseDown={(e) => e.preventDefault()}
     >
       {/* Background Image - Fixed Position */}
       {capturedImage && (
         <div
-            className="fixed inset-0 w-full h-full z-0 select-none"
-            style={{ WebkitUserDrag: 'none', userSelect: 'none', touchAction: 'none' } as React.CSSProperties}
-            onDragStart={(e) => e.preventDefault()}
-            onTouchStart={(e) => e.preventDefault()}
-            onMouseDown={(e) => e.preventDefault()}
+            className="fixed inset-0 w-full h-full z-0"
         >
           <img
             src={capturedImage}
             alt="Captured waste"
-            className="w-full h-full object-cover select-none"
-            style={{ WebkitUserDrag: 'none', userSelect: 'none', touchAction: 'none' } as React.CSSProperties}
-            onDragStart={(e) => e.preventDefault()}
-            onTouchStart={(e) => e.preventDefault()}
-            onMouseDown={(e) => e.preventDefault()}
+            className="w-full h-full object-cover"
           />
         </div>
+        // <img
+        //   src={capturedImage}
+        //   alt="Captured waste"
+        //   className="absolute inset-0 w-full h-full object-cover"
+        // />
       )}
 
       {/* Header with Back Button */}
