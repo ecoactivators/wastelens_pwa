@@ -185,23 +185,13 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
         </div>
       )}
 
-      {/* Draggable Results Card */}
+      {/* Results Card */}
       {analysisResult && !isAnalyzing && !error && (
         <div
           ref={cardRef}
-          className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-20 flex flex-col ${
-            isDragging ? '' : 'transition-all duration-300 ease-out'
-          }`}
+          className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-20 flex flex-col"
           style={{ height: `${cardHeight}vh` }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onMouseDown={handleMouseDown}
         >
-          {/* Drag Handle */}
-          <div className="flex justify-center pt-3 pb-2">
-            <div className="w-12 h-1 bg-gray-400 rounded-full cursor-grab active:cursor-grabbing"></div>
-          </div>
 
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto hide-scrollbar px-6">
