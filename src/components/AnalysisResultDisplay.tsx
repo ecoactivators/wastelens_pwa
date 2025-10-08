@@ -169,14 +169,14 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
         <div className="flex items-center justify-center relative">
           {/* Back Button */}
           {analysisResult && (
-            <div className="absolute top-5 left-5">
+            <div className="absolute top-5 left-5 group">
             <button
               onClick={onClearAnalysis}
               className="w-12 h-12 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
             >
               <ArrowLeft className="w-5 h-5 text-primary-accent-cyan" />
               <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
-                Snap Trash
+                Back to Camera
               </span>
             </button>
           </div>
