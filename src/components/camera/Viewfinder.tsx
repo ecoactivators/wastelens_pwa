@@ -199,13 +199,11 @@ export const Viewfinder: React.FC = () => {
     <>
       {/* Camera View - Always rendered but hidden when showing analysis */}
       <div
-        className={`relative min-h-screen bg-black overflow-hidden select-none ${
+        className={`relative min-h-screen bg-black overflow-hidden ${
           showAnalysisView ? 'hidden' : ''
         }`}
-        style={{ touchAction: 'none', WebkitUserDrag: 'none', userSelect: 'none' } as React.CSSProperties}
         onTouchStart={handleUserInteraction}
         onMouseMove={handleUserInteraction}
-        onDragStart={(e) => e.preventDefault()}
       >
         {/* Camera Video Feed */}
         <video
@@ -213,9 +211,7 @@ export const Viewfinder: React.FC = () => {
           autoPlay
           playsInline
           muted
-          className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-          style={{ WebkitUserDrag: 'none' } as React.CSSProperties}
-          onDragStart={(e) => e.preventDefault()}
+          className="absolute inset-0 w-full h-full object-cover"
         />
         
         {/* Dark overlay for better UI visibility */}
