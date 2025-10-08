@@ -161,7 +161,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
       )}
 
       {/* Header with Back Button */}
-      <div className="absolute top-0 left-0 right-0 p-4 z-10">
+      <div className="fixed top-0 left-0 right-0 p-4 z-30">
         <div className="flex items-center justify-center relative">
           {/* Back Button */}
           {analysisResult && (
