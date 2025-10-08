@@ -136,19 +136,13 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      {/* Background Image - Fixed Position */}
+      {/* Background Image */}
       {capturedImage && (
-        <div className="fixed inset-0 w-full h-full z-0">
-          <img
-            src={capturedImage}
-            alt="Captured waste"
-            className="w-full h-full object-cover select-none"
-            style={{ WebkitUserDrag: 'none', userSelect: 'none', touchAction: 'none' } as React.CSSProperties}
-            onDragStart={(e) => e.preventDefault()}
-            onTouchStart={(e) => e.preventDefault()}
-            onMouseDown={(e) => e.preventDefault()}
-          />
-        </div>
+        <img
+          src={capturedImage}
+          alt="Captured waste"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       )}
 
       {/* Header */}
@@ -199,16 +193,14 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
             isDragging ? '' : 'transition-all duration-300 ease-out'
           }`}
           style={{ height: `${cardHeight}vh` }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
         >
           {/* Drag Handle */}
-          <div
-            className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            onMouseDown={handleMouseDown}
-          >
-            <div className="w-12 h-1 bg-gray-400 rounded-full"></div>
+          <div className="flex justify-center pt-3 pb-2">
+            <div className="w-12 h-1 bg-gray-400 rounded-full cursor-grab active:cursor-grabbing"></div>
           </div>
 
           {/* Scrollable Content */}
