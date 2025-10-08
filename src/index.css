@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent drag behavior on the entire app */
+body, #root {
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
 /* Hide scrollbar while maintaining scroll functionality */
 .hide-scrollbar {
   /* For Webkit browsers (Chrome, Safari, Edge) */
