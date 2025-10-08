@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 //import { MapPin, AlertTriangle, CheckCircle, Recycle, Trash2, Settings } from 'lucide-react';
-import { MapPin, AlertTriangle } from 'lucide-react';
+import { MapPin, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { WasteAnalysisResponse } from '../types/waste';
 
 interface AnalysisResultDisplayProps {
@@ -162,9 +162,18 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
         </div>
       )}
 
-      {/* Header */}
+      {/* Header with Back Button */}
       <div className="absolute top-0 left-0 right-0 p-4 z-10">
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center relative">
+          {/* Back Button */}
+          <div className="absolute left-0">
+            <button
+              onClick={onClearAnalysis}
+              className="w-12 h-12 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+            >
+              <ArrowLeft className="w-5 h-5 text-primary-accent-cyan" />
+            </button>
+          </div>
           <h1 className="text-lg font-semibold text-white">Waste Lens™</h1>
         </div>
       </div>
