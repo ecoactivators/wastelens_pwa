@@ -136,9 +136,9 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      {/* Background Image */}
+      {/* Background Image - Fixed Position */}
       {capturedImage && (
-        <div className="absolute inset-0 w-full h-full">
+        <div className="fixed inset-0 w-full h-full z-0">
           <img
             src={capturedImage}
             alt="Captured waste"
