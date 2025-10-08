@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent pull-to-refresh and overscroll bounce on mobile */
+html, body {
+  overscroll-behavior: none;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 /* Hide scrollbar while maintaining scroll functionality */
 .hide-scrollbar {
   /* For Webkit browsers (Chrome, Safari, Edge) */
