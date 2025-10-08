@@ -3,18 +3,17 @@
 @tailwind utilities;
 
 /* Prevent pull-to-refresh and overscroll bounce on mobile */
-html, body {
+html {
   overscroll-behavior: none;
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
+}
+
+body {
+  overscroll-behavior: none;
+  touch-action: pan-x pan-y;
 }
 
 #root {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 /* Hide scrollbar while maintaining scroll functionality */
