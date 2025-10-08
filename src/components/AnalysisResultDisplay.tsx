@@ -161,11 +161,10 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
       )}
 
       {/* Header with Back Button */}
-      <div className="fixed top-0 left-0 right-0 p-4 z-30">
-        <div className="flex items-center justify-center relative">
-          {/* Back Button */}
-          {analysisResult && (
-            <div className="absolute top-5 left-5 group">
+      <div className="fixed top-0 left-0 right-0 z-30 pointer-events-none">
+        {/* Back Button */}
+        {analysisResult && (
+          <div className="fixed top-6 left-6 group pointer-events-auto">
             <button
               onClick={onClearAnalysis}
               className="w-12 h-12 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
@@ -176,7 +175,10 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
               </span>
             </button>
           </div>
-          )}
+        )}
+
+        {/* Title - Centered */}
+        <div className="flex items-center justify-center p-4 pointer-events-auto">
           <h1 className="text-lg font-semibold text-white">Waste Lens™</h1>
         </div>
       </div>
