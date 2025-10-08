@@ -252,6 +252,7 @@ export const Viewfinder: React.FC = () => {
         />
         
         {/* Camera Roll Selection Button with Hover Text */}
+        {/*<div className="absolute left-8 group" style={{ bottom: 'max(2rem, env(safe-area-inset-bottom))' }}>*/}
         <div className="absolute left-8 group" style={{ bottom: 'max(2rem, env(safe-area-inset-bottom))' }}>
           <button
             onClick={handleSelectFromCameraRoll}
@@ -265,6 +266,7 @@ export const Viewfinder: React.FC = () => {
         </div>
         
         {/* Activate Hub Button with Hover Text */}
+        {/*<div className="absolute right-8 group" style={{ bottom: 'max(2rem, env(safe-area-inset-bottom))' }}>*/}
         <div className="absolute right-8 group" style={{ bottom: 'max(2rem, env(safe-area-inset-bottom))' }}>
           <button
             onClick={() => {
