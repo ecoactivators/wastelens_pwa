@@ -1,7 +1,6 @@
 import { WasteAnalysisResponse, LocationData } from '../types/waste';
 import {SYSTEM_AI_PROMPT, USER_AI_PROMPT} from "../constants/aiPrompts.ts";
 import {populateTemplate} from "../utils/stringTemplateUtils.ts";
-import {logMessage} from "../utils/logUtils.ts";
 
 export class OpenAIService {
   private apiKey: string;
@@ -27,11 +26,9 @@ export class OpenAIService {
       
       const systemAIPromptArgs = [locationContext];
       const systemAIPromptPopulated = populateTemplate(SYSTEM_AI_PROMPT, systemAIPromptArgs);
-      logMessage(systemAIPromptPopulated);
 
       const userAIPromptArgs = [locationContext];
       const userAIPromptPopulated = populateTemplate(USER_AI_PROMPT, userAIPromptArgs);
-      logMessage(userAIPromptPopulated);
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -82,7 +79,7 @@ export class OpenAIService {
       // Parse JSON response
       let result: WasteAnalysisResponse;
       try {
-        // Clean the content by removing potential markdown code blocks and trimming whitespace
+        // Clean the content by removing potential mark down code blocks and trimming whitespace
         const cleanedContent = content
           .trim()
           .replace(/^```json\s*/, '')  // Remove opening ```json
