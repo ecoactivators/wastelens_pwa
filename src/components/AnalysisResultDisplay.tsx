@@ -168,7 +168,8 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
       <div className="absolute top-0 left-0 right-0 p-4 z-10">
         <div className="flex items-center justify-center relative">
           {/* Back Button */}
-          <div className="absolute top-5 left-5">
+          {analysisResult &&
+            <div className="absolute top-5 left-5">
             <button
               onClick={onClearAnalysis}
               className="w-12 h-12 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
@@ -179,6 +180,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
               </span>
             </button>
           </div>
+          }
           <h1 className="text-lg font-semibold text-white">Waste Lens™</h1>
         </div>
       </div>
