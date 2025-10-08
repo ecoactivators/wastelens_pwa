@@ -12,7 +12,7 @@ export const SnapButton: React.FC<SnapButtonProps> = ({
   isCapturing = false 
 }) => {
   return (
-    <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+    <div className="absolute left-1/2 transform -translate-x-1/2" style={{ bottom: 'max(2rem, env(safe-area-inset-bottom))' }}>
       <button
         onClick={onSnap}
         disabled={disabled || isCapturing}
