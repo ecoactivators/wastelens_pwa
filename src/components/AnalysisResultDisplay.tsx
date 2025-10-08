@@ -136,13 +136,19 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      {/* Background Image */}
+      {/* Background Image - Fixed Position */}
       {capturedImage && (
-        <img
-          src={capturedImage}
-          alt="Captured waste"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        <div className="fixed inset-0 w-full h-full z-0">
+          <img
+            src={capturedImage}
+            alt="Captured waste"
+            className="w-full h-full object-cover select-none"
+            style={{ WebkitUserDrag: 'none', userSelect: 'none', touchAction: 'none' } as React.CSSProperties}
+            onDragStart={(e) => e.preventDefault()}
+            onTouchStart={(e) => e.preventDefault()}
+            onMouseDown={(e) => e.preventDefault()}
+          />
+        </div>
       )}
 
       {/* Header */}
@@ -185,13 +191,25 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
         </div>
       )}
 
-      {/* Results Card */}
+      {/* Draggable Results Card */}
       {analysisResult && !isAnalyzing && !error && (
         <div
           ref={cardRef}
-          className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-20 flex flex-col"
+          className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-20 flex flex-col ${
+            isDragging ? '' : 'transition-all duration-300 ease-out'
+          }`}
           style={{ height: `${cardHeight}vh` }}
         >
+          {/* Drag Handle */}
+          <div
+            className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+          >
+            <div className="w-12 h-1 bg-gray-400 rounded-full"></div>
+          </div>
 
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto hide-scrollbar px-6">
