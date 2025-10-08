@@ -3,17 +3,8 @@
 @tailwind utilities;
 
 /* Prevent pull-to-refresh and overscroll bounce on mobile */
-html {
-  overscroll-behavior: none;
-}
-
 body {
-  overscroll-behavior: none;
-  touch-action: pan-x pan-y;
-}
-
-#root {
-  overscroll-behavior: none;
+  overscroll-behavior-y: contain;
 }
 
 /* Hide scrollbar while maintaining scroll functionality */
