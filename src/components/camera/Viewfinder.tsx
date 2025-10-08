@@ -198,12 +198,21 @@ export const Viewfinder: React.FC = () => {
   return (
     <>
       {/* Camera View - Always rendered but hidden when showing analysis */}
+      {/*<div*/}
+      {/*  className={`relative min-h-screen bg-black overflow-hidden ${*/}
+      {/*    showAnalysisView ? 'hidden' : ''*/}
+      {/*  }`}*/}
+      {/*  onTouchStart={handleUserInteraction}*/}
+      {/*  onMouseMove={handleUserInteraction}*/}
+      {/*>*/}
       <div
-        className={`relative min-h-screen bg-black overflow-hidden ${
-          showAnalysisView ? 'hidden' : ''
-        }`}
-        onTouchStart={handleUserInteraction}
-        onMouseMove={handleUserInteraction}
+          className={`relative min-h-screen bg-black overflow-hidden select-none ${
+              showAnalysisView ? 'hidden' : ''
+          }`}
+          style={{ touchAction: 'none', WebkitUserDrag: 'none', userSelect: 'none' } as React.CSSProperties}
+          onTouchStart={handleUserInteraction}
+          onMouseMove={handleUserInteraction}
+          onDragStart={(e) => e.preventDefault()}
       >
         {/* Camera Video Feed */}
         <video
@@ -213,6 +222,15 @@ export const Viewfinder: React.FC = () => {
           muted
           className="absolute inset-0 w-full h-full object-cover"
         />
+        {/*<video*/}
+        {/*    ref={videoRef}*/}
+        {/*    autoPlay*/}
+        {/*    playsInline*/}
+        {/*    muted*/}
+        {/*    className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"*/}
+        {/*    style={{ WebkitUserDrag: 'none' } as React.CSSProperties}*/}
+        {/*    onDragStart={(e) => e.preventDefault()}*/}
+        {/*/>*/}
         
         {/* Dark overlay for better UI visibility */}
         <div className="absolute inset-0 bg-black/20"></div>

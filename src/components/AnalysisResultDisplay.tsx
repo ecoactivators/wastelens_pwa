@@ -135,7 +135,12 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
   }, [isDragging, startY, startHeight, cardHeight]);
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
+    <div className="relative w-screen h-screen overflow-hidden select-none"
+         style={{ WebkitUserDrag: 'none', userSelect: 'none', touchAction: 'none' } as React.CSSProperties}
+         onDragStart={(e) => e.preventDefault()}
+         onTouchStart={(e) => e.preventDefault()}
+         onMouseDown={(e) => e.preventDefault()}
+    >
       {/* Background Image - Fixed Position */}
       {capturedImage && (
         <div

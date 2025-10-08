@@ -15,10 +15,10 @@ function App() {
   }, []);
 
   if (showLoadingScreen) {
-    return <LoadingScreen />;
+    return <LoadingScreen/>;
+  } else {
+    return <Viewfinder/>;
   }
-
-  return <Viewfinder />;
 }
 
 export default App;
