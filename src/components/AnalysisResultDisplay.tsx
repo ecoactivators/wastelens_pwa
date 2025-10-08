@@ -138,13 +138,17 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
     <div className="relative w-screen h-screen overflow-hidden">
       {/* Background Image */}
       {capturedImage && (
-        <img
-          src={capturedImage}
-          alt="Captured waste"
-          className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-          style={{ WebkitUserDrag: 'none' } as React.CSSProperties}
-          onDragStart={(e) => e.preventDefault()}
-        />
+        <div className="absolute inset-0 w-full h-full">
+          <img
+            src={capturedImage}
+            alt="Captured waste"
+            className="w-full h-full object-cover select-none"
+            style={{ WebkitUserDrag: 'none', userSelect: 'none', touchAction: 'none' } as React.CSSProperties}
+            onDragStart={(e) => e.preventDefault()}
+            onTouchStart={(e) => e.preventDefault()}
+            onMouseDown={(e) => e.preventDefault()}
+          />
+        </div>
       )}
 
       {/* Header */}
