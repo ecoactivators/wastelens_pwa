@@ -198,22 +198,22 @@ export const Viewfinder: React.FC = () => {
   return (
     <>
       {/* Camera View - Always rendered but hidden when showing analysis */}
-      {/*<div*/}
-      {/*  className={`relative min-h-screen bg-black overflow-hidden ${*/}
-      {/*    showAnalysisView ? 'hidden' : ''*/}
-      {/*  }`}*/}
-      {/*  onTouchStart={handleUserInteraction}*/}
-      {/*  onMouseMove={handleUserInteraction}*/}
-      {/*>*/}
       <div
-          className={`relative min-h-screen bg-black overflow-hidden select-none ${
-              showAnalysisView ? 'hidden' : ''
-          }`}
-          style={{ touchAction: 'none', WebkitUserDrag: 'none', userSelect: 'none' } as React.CSSProperties}
-          onTouchStart={handleUserInteraction}
-          onMouseMove={handleUserInteraction}
-          onDragStart={(e) => e.preventDefault()}
+        className={`relative min-h-screen bg-black overflow-hidden ${
+          showAnalysisView ? 'hidden' : ''
+        }`}
+        onTouchStart={handleUserInteraction}
+        onMouseMove={handleUserInteraction}
       >
+      {/*<div*/}
+      {/*    className={`relative min-h-screen bg-black overflow-hidden select-none ${*/}
+      {/*        showAnalysisView ? 'hidden' : ''*/}
+      {/*    }`}*/}
+      {/*    style={{ touchAction: 'none', WebkitUserDrag: 'none', userSelect: 'none' } as React.CSSProperties}*/}
+      {/*    onTouchStart={handleUserInteraction}*/}
+      {/*    onMouseMove={handleUserInteraction}*/}
+      {/*    onDragStart={(e) => e.preventDefault()}*/}
+      {/*>*/}
         {/* Camera Video Feed */}
         <video
           ref={videoRef}
