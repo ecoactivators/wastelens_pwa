@@ -375,7 +375,6 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
           onClose={() => setShowUpgradePrompt(false)}
           onSuccess={() => {
             setShowUpgradePrompt(false);
-            alert('Account upgraded successfully! You can now access all premium features.');
           }}
         />
       )}
