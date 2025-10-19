@@ -1,12 +1,15 @@
 import { useState, useCallback } from 'react';
 import { SnapMetadata } from '../types/waste';
+import { imageStorageService } from '../services/imageStorage';
+import { databaseService } from '../services/database';
 
 interface UseSnapCaptureProps {
   videoRef: React.RefObject<HTMLVideoElement>;
   location: { latitude: number; longitude: number } | null;
+  userId: string | null;
 }
 
-export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
+export const useSnapCapture = ({ videoRef, location, userId }: UseSnapCaptureProps) => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
 
@@ -77,15 +80,18 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
   const triggerSnap = useCallback(async (): Promise<SnapMetadata | null> => {
     if (isCapturing) return null;
 
+    if (!userId) {
+      console.error('📸 [useSnapCapture] No user ID available');
+      return null;
+    }
+
     console.log('📸 [useSnapCapture] Starting snap capture process...');
     setIsCapturing(true);
     setShowFlash(true);
 
     try {
-      // Capture the image
-      console.log('📸 [useSnapCapture] Capturing image from video element...');
       const imageData = await captureImage();
-      
+
       if (!imageData) {
         console.error('📸 [useSnapCapture] Failed to capture image - no data returned');
         throw new Error('Failed to capture image');
@@ -95,26 +101,47 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
         dataLength: imageData.length,
         dataType: imageData.substring(0, 30) + '...'
       });
-      // Create snap metadata
+
+      const tempSnapId = `snap_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const timestamp = Date.now();
+
+      console.log('📸 [useSnapCapture] Uploading image to Storage...');
+      const imageUrl = await imageStorageService.uploadImage(userId, imageData, tempSnapId);
+
+      if (!imageUrl) {
+        throw new Error('Failed to upload image to storage');
+      }
+
+      console.log('📸 [useSnapCapture] Image uploaded successfully:', imageUrl);
+
+      console.log('📸 [useSnapCapture] Saving snap to database...');
+      const snapRecord = await databaseService.createSnap(
+        userId,
+        timestamp,
+        imageUrl,
+        location?.latitude,
+        location?.longitude
+      );
+
+      if (!snapRecord) {
+        throw new Error('Failed to save snap to database');
+      }
+
+      console.log('📸 [useSnapCapture] Snap saved to database:', snapRecord.id);
+
       const snapMetadata: SnapMetadata = {
-        id: `snap_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        timestamp: Date.now(),
-        latitude: location?.latitude,
-        longitude: location?.longitude,
+        id: snapRecord.id,
+        timestamp: snapRecord.timestamp,
+        latitude: snapRecord.latitude ?? undefined,
+        longitude: snapRecord.longitude ?? undefined,
         imageData,
       };
 
-      // Store locally (for now)
-      const existingSnaps = JSON.parse(localStorage.getItem('waste_lens_snaps') || '[]');
-      existingSnaps.push(snapMetadata);
-      localStorage.setItem('waste_lens_snaps', JSON.stringify(existingSnaps));
-
-      console.log('📸 [useSnapCapture] Snap metadata created and stored:', {
+      console.log('📸 [useSnapCapture] Snap metadata created:', {
         id: snapMetadata.id,
         timestamp: snapMetadata.timestamp,
         hasLocation: !!(snapMetadata.latitude && snapMetadata.longitude),
-        imageSize: imageData.length,
-        storedSnapsCount: existingSnaps.length
+        imageUrl,
       });
 
       return snapMetadata;
@@ -122,12 +149,11 @@ export const useSnapCapture = ({ videoRef, location }: UseSnapCaptureProps) => {
       console.error('📸 [useSnapCapture] Snap capture failed:', error);
       return null;
     } finally {
-      // Hide flash after animation
       console.log('📸 [useSnapCapture] Cleaning up capture state...');
       setTimeout(() => setShowFlash(false), 300);
       setTimeout(() => setIsCapturing(false), 500);
     }
-  }, [isCapturing, captureImage, location]);
+  }, [isCapturing, captureImage, location, userId]);
 
   return {
     isCapturing,

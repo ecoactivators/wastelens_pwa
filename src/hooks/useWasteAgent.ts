@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { databaseService } from '../services/database';
 
 interface WasteAgentState {
   snapCount: number;
@@ -6,45 +7,74 @@ interface WasteAgentState {
   shouldShowTraining: boolean;
 }
 
-export const useWasteAgent = () => {
+export const useWasteAgent = (userId: string | null) => {
   const [agentState, setAgentState] = useState<WasteAgentState>({
     snapCount: 0,
     lastActiveDate: Date.now(),
     shouldShowTraining: true,
   });
 
-  // Load agent state from localStorage on mount
   useEffect(() => {
-    const savedState = localStorage.getItem('waste_agent_state');
-    if (savedState) {
-      const parsed = JSON.parse(savedState);
-      setAgentState(parsed);
+    if (!userId) return;
+
+    const loadAgentState = async () => {
+      try {
+        const logs = await databaseService.getUserActivityLogs(userId, 100);
+
+        const snapSuccessLogs = logs.filter(log => log.activity_type === 'snap_success');
+        const lastActivity = logs.length > 0 ? new Date(logs[0].created_at).getTime() : Date.now();
+
+        setAgentState({
+          snapCount: snapSuccessLogs.length,
+          lastActiveDate: lastActivity,
+          shouldShowTraining: snapSuccessLogs.length < 3,
+        });
+      } catch (error) {
+        console.error('Failed to load agent state:', error);
+      }
+    };
+
+    loadAgentState();
+  }, [userId]);
+
+  const recordSnapSuccess = async () => {
+    if (!userId) return;
+
+    try {
+      await databaseService.logActivity(userId, 'snap_success', {
+        timestamp: Date.now(),
+      });
+
+      setAgentState(prev => ({
+        ...prev,
+        snapCount: prev.snapCount + 1,
+        lastActiveDate: Date.now(),
+        shouldShowTraining: prev.snapCount < 2,
+      }));
+    } catch (error) {
+      console.error('Failed to record snap success:', error);
     }
-  }, []);
-
-  // Save agent state to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('waste_agent_state', JSON.stringify(agentState));
-  }, [agentState]);
-
-  const recordSnapSuccess = () => {
-    setAgentState(prev => ({
-      ...prev,
-      snapCount: prev.snapCount + 1,
-      lastActiveDate: Date.now(),
-      shouldShowTraining: prev.snapCount < 2, // Hide after 3rd snap (0, 1, 2)
-    }));
   };
 
-  const updateActivity = () => {
+  const updateActivity = async () => {
+    if (!userId) return;
+
     const now = Date.now();
     const daysSinceLastActive = (now - agentState.lastActiveDate) / (1000 * 60 * 60 * 24);
-    
-    setAgentState(prev => ({
-      ...prev,
-      lastActiveDate: now,
-      shouldShowTraining: prev.snapCount < 3 || daysSinceLastActive >= 7,
-    }));
+
+    try {
+      await databaseService.logActivity(userId, 'user_active', {
+        timestamp: now,
+      });
+
+      setAgentState(prev => ({
+        ...prev,
+        lastActiveDate: now,
+        shouldShowTraining: prev.snapCount < 3 || daysSinceLastActive >= 7,
+      }));
+    } catch (error) {
+      console.error('Failed to update activity:', error);
+    }
   };
 
   const shouldShowIdleTraining = (idleTime: number): boolean => {

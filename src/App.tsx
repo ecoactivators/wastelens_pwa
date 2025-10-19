@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
+import { AuthProvider, useAuth } from './hooks/useAuth';
 import { LoadingScreen } from './components/LoadingScreen';
 import { Viewfinder } from './components/camera/Viewfinder';
+import { AuthModal } from './components/AuthModal';
 
-function App() {
+function AppContent() {
+  const { user, loading: authLoading } = useAuth();
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
-    // Show loading screen for 3 seconds before transitioning to main app
     const timer = setTimeout(() => {
       setShowLoadingScreen(false);
     }, 3000);
@@ -14,11 +17,38 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!authLoading && !user && !showLoadingScreen) {
+      setShowAuthModal(true);
+    }
+  }, [authLoading, user, showLoadingScreen]);
+
   if (showLoadingScreen) {
-    return <LoadingScreen/>;
-  } else {
-    return <Viewfinder/>;
+    return <LoadingScreen />;
   }
+
+  if (!user && !authLoading) {
+    return (
+      <div className="min-h-screen bg-primary-bg flex items-center justify-center">
+        {showAuthModal && (
+          <AuthModal
+            onClose={() => setShowAuthModal(false)}
+            onSuccess={() => setShowAuthModal(false)}
+          />
+        )}
+      </div>
+    );
+  }
+
+  return <Viewfinder />;
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }
 
 export default App;

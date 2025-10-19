@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { useCamera } from '../../hooks/useCamera';
 import { useLocation } from '../../hooks/useLocation';
 import { useSnapCapture } from '../../hooks/useSnapCapture';
@@ -14,10 +15,11 @@ import { AnalysisResultDisplay } from '../AnalysisResultDisplay';
 import { ImageIcon, Zap } from 'lucide-react';
 
 export const Viewfinder: React.FC = () => {
+  const { user } = useAuth();
   const { permissionState, videoRef, requestCameraAccess } = useCamera();
   const { location } = useLocation();
-  const { isCapturing, showFlash, triggerSnap } = useSnapCapture({ videoRef, location });
-  const { recordSnapSuccess, updateActivity, shouldShowIdleTraining } = useWasteAgent();
+  const { isCapturing, showFlash, triggerSnap } = useSnapCapture({ videoRef, location, userId: user?.id ?? null });
+  const { recordSnapSuccess, updateActivity, shouldShowIdleTraining } = useWasteAgent(user?.id ?? null);
   const { isAnalyzing, analysisResult, error, analyzeWaste, clearAnalysis } = useWasteAnalysis();
   
   const [showIdleTraining, setShowIdleTraining] = useState(false);
@@ -86,9 +88,9 @@ export const Viewfinder: React.FC = () => {
       setShowAnalysisView(true);
       
       // Start analysis with image and location
-      if (snapResult.imageData) {
+      if (snapResult.imageData && user?.id) {
         console.log('🤖 [ViewFinder] Starting waste analysis...');
-        await analyzeWaste(snapResult.imageData, location || undefined);
+        await analyzeWaste(snapResult.imageData, snapResult.id, user.id, location || undefined);
       }
     } else {
       console.error('📸 [Snap] Snap failed - no result returned');
@@ -122,9 +124,12 @@ export const Viewfinder: React.FC = () => {
           
           // Transition to analysis view
           setShowAnalysisView(true);
-          
+
           // Start analysis with selected image and location
-          await analyzeWaste(imageData, location || undefined);
+          if (user?.id) {
+            const tempSnapId = `upload_${Date.now()}`;
+            await analyzeWaste(imageData, tempSnapId, user.id, location || undefined);
+          }
         }
       };
       

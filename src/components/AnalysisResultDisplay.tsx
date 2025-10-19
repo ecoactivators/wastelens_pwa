@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-//import { MapPin, AlertTriangle, CheckCircle, Recycle, Trash2, Settings } from 'lucide-react';
 import { MapPin, AlertTriangle, ArrowLeft } from 'lucide-react';
-
+import { useAuth } from '../hooks/useAuth';
+import { UpgradePrompt } from './UpgradePrompt';
 import { WasteAnalysisResponse } from '../types/waste';
 
 interface AnalysisResultDisplayProps {
@@ -19,7 +19,9 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
   capturedImage,
   onClearAnalysis,
 }) => {
-  const [cardHeight, setCardHeight] = useState(33.33); // Start at 1/3 height (33.33%)
+  const { isAnonymous } = useAuth();
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [cardHeight, setCardHeight] = useState(33.33);
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [startHeight, setStartHeight] = useState(33.33);
@@ -334,8 +336,12 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                 {/* Agent Handle Button */}
                 <button
                   onClick={() => {
-                    console.log('Agent Handle triggered');
-                    alert('Coming soon! Agentic AI experiences. Handled for you: resale management, shipping arrangement, pick-up coordination, and much more.');
+                    if (isAnonymous) {
+                      setShowUpgradePrompt(true);
+                    } else {
+                      console.log('Agent Handle triggered');
+                      alert('Coming soon! Agentic AI experiences. Handled for you: resale management, shipping arrangement, pick-up coordination, and much more.');
+                    }
                   }}
                   className="btn-primary flex-1 min-w-0 px-4"
                 >
@@ -345,8 +351,12 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                 {/* Reward Hub Button */}
                 <button
                   onClick={() => {
-                    console.log('Reward Hub triggered');
-                    alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
+                    if (isAnonymous) {
+                      setShowUpgradePrompt(true);
+                    } else {
+                      console.log('Reward Hub triggered');
+                      alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
+                    }
                   }}
                   className="btn-primary flex-1 min-w-0 px-4"
                 >
@@ -356,6 +366,17 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Upgrade Prompt Modal */}
+      {showUpgradePrompt && (
+        <UpgradePrompt
+          onClose={() => setShowUpgradePrompt(false)}
+          onSuccess={() => {
+            setShowUpgradePrompt(false);
+            alert('Account upgraded successfully! You can now access all premium features.');
+          }}
+        />
       )}
     </div>
   );
