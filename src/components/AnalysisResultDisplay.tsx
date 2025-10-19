@@ -20,13 +20,14 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
   capturedImage,
   onClearAnalysis,
 }) => {
-  const { isAnonymous } = useAuth();
+  const { isAnonymous, signOut } = useAuth();
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const [showResellForm, setShowResellForm] = useState(false);
   const [cardHeight, setCardHeight] = useState(33.33);
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [startHeight, setStartHeight] = useState(33.33);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   // const getCategoryIcon = (category: string) => {
@@ -117,6 +118,20 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
   // Mouse events for desktop
   const handleMouseDown = (e: React.MouseEvent) => {
     handleStart(e.clientY);
+  };
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    try {
+      await signOut();
+      onClearAnalysis();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   useEffect(() => {
@@ -326,42 +341,45 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
               ))}
 
               {/* Bottom Buttons - Now embedded in scrollable content */}
-              <div className="py-4 flex gap-2 px-0">
-                {/* Snap Trash Button */}
-                {/*<button*/}
-                {/*  onClick={onClearAnalysis}*/}
-                {/*  className="btn-primary flex-1 min-w-0 px-4"*/}
-                {/*>*/}
-                {/*  Snap Trash*/}
-                {/*</button>*/}
+              <div className="py-4 flex flex-col gap-3 px-0">
+                <div className="flex gap-2">
+                  {/* Agent Handle Button */}
+                  <button
+                    onClick={() => {
+                      if (isAnonymous) {
+                        setShowUpgradePrompt(true);
+                      } else {
+                        setShowResellForm(true);
+                      }
+                    }}
+                    className="btn-primary flex-1 min-w-0 px-4"
+                  >
+                    Agent Handle
+                  </button>
 
-                {/* Agent Handle Button */}
-                <button
-                  onClick={() => {
-                    if (isAnonymous) {
-                      setShowUpgradePrompt(true);
-                    } else {
-                      setShowResellForm(true);
-                    }
-                  }}
-                  className="btn-primary flex-1 min-w-0 px-4"
-                >
-                  Agent Handle
-                </button>
+                  {/* Reward Hub Button */}
+                  <button
+                    onClick={() => {
+                      if (isAnonymous) {
+                        setShowUpgradePrompt(true);
+                      } else {
+                        console.log('Reward Hub triggered');
+                        alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
+                      }
+                    }}
+                    className="btn-primary flex-1 min-w-0 px-4"
+                  >
+                    Activate Hub
+                  </button>
+                </div>
 
-                {/* Reward Hub Button */}
+                {/* Logout Option */}
                 <button
-                  onClick={() => {
-                    if (isAnonymous) {
-                      setShowUpgradePrompt(true);
-                    } else {
-                      console.log('Reward Hub triggered');
-                      alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
-                    }
-                  }}
-                  className="btn-primary flex-1 min-w-0 px-4"
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="text-xs text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-center py-1"
                 >
-                  Activate Hub
+                  {isLoggingOut ? 'Logging out...' : 'Log out'}
                 </button>
               </div>
             </div>
