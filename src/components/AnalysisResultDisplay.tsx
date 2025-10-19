@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MapPin, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { UpgradePrompt } from './UpgradePrompt';
+import { ResellListingForm } from './ResellListingForm';
 import { WasteAnalysisResponse } from '../types/waste';
 
 interface AnalysisResultDisplayProps {
@@ -21,6 +22,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
 }) => {
   const { isAnonymous } = useAuth();
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [showResellForm, setShowResellForm] = useState(false);
   const [cardHeight, setCardHeight] = useState(33.33);
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -339,8 +341,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                     if (isAnonymous) {
                       setShowUpgradePrompt(true);
                     } else {
-                      console.log('Agent Handle triggered');
-                      alert('Coming soon! Agentic AI experiences. Handled for you: resale management, shipping arrangement, pick-up coordination, and much more.');
+                      setShowResellForm(true);
                     }
                   }}
                   className="btn-primary flex-1 min-w-0 px-4"
@@ -377,6 +378,11 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
             alert('Account upgraded successfully! You can now access all premium features.');
           }}
         />
+      )}
+
+      {/* Resell Listing Form */}
+      {showResellForm && (
+        <ResellListingForm onClose={() => setShowResellForm(false)} />
       )}
     </div>
   );
