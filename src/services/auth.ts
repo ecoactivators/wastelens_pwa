@@ -106,7 +106,10 @@ export class AuthService {
     }
   }
 
-  async signInWithOAuth(provider: 'google' | 'github' | 'facebook'): Promise<{ error: AuthError | null }> {
+  async signInWithOAuth(
+    provider: 'google' | 'github' | 'facebook',
+    options?: { isUpgrade?: boolean; redirectPath?: string }
+  ): Promise<{ error: AuthError | null }> {
     if (!supabase) {
       return {
         error: { message: 'Supabase client not initialized', name: 'ConfigError', status: 500 } as AuthError,
@@ -114,21 +117,39 @@ export class AuthService {
     }
 
     try {
+      if (options?.isUpgrade) {
+        const { data: currentUser } = await supabase.auth.getUser();
+        if (currentUser?.user?.is_anonymous) {
+          localStorage.setItem('pendingOAuthUpgrade', 'true');
+          localStorage.setItem('anonymousUserId', currentUser.user.id);
+          if (options.redirectPath) {
+            localStorage.setItem('oauthRedirectPath', options.redirectPath);
+          }
+        }
+      }
+
+      const redirectPath = options?.redirectPath || window.location.pathname;
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: `${window.location.origin}${redirectPath}`,
         },
       });
 
       if (error) {
         console.error('OAuth sign in error:', error);
+        localStorage.removeItem('pendingOAuthUpgrade');
+        localStorage.removeItem('anonymousUserId');
+        localStorage.removeItem('oauthRedirectPath');
         return { error };
       }
 
       return { error: null };
     } catch (error) {
       console.error('OAuth sign in failed:', error);
+      localStorage.removeItem('pendingOAuthUpgrade');
+      localStorage.removeItem('anonymousUserId');
+      localStorage.removeItem('oauthRedirectPath');
       return { error: error as AuthError };
     }
   }
@@ -248,6 +269,54 @@ export class AuthService {
         error: error as AuthError,
       };
     }
+  }
+
+  async handleOAuthUpgradeCallback(): Promise<{ success: boolean; error?: string }> {
+    const isPendingUpgrade = localStorage.getItem('pendingOAuthUpgrade');
+    const anonymousUserId = localStorage.getItem('anonymousUserId');
+
+    if (!isPendingUpgrade || !anonymousUserId) {
+      return { success: false };
+    }
+
+    try {
+      const { data: currentUser } = await supabase?.auth.getUser() || { data: null };
+
+      if (!currentUser?.user) {
+        localStorage.removeItem('pendingOAuthUpgrade');
+        localStorage.removeItem('anonymousUserId');
+        localStorage.removeItem('oauthRedirectPath');
+        return { success: false, error: 'No user found after OAuth' };
+      }
+
+      if (currentUser.user.is_anonymous) {
+        localStorage.removeItem('pendingOAuthUpgrade');
+        localStorage.removeItem('anonymousUserId');
+        localStorage.removeItem('oauthRedirectPath');
+        return { success: false, error: 'Still anonymous after OAuth' };
+      }
+
+      console.log('OAuth upgrade successful:', currentUser.user.id);
+      localStorage.removeItem('pendingOAuthUpgrade');
+      localStorage.removeItem('anonymousUserId');
+      localStorage.removeItem('oauthRedirectPath');
+
+      return { success: true };
+    } catch (error) {
+      console.error('OAuth upgrade callback failed:', error);
+      localStorage.removeItem('pendingOAuthUpgrade');
+      localStorage.removeItem('anonymousUserId');
+      localStorage.removeItem('oauthRedirectPath');
+      return { success: false, error: 'Failed to process OAuth upgrade' };
+    }
+  }
+
+  isPendingOAuthUpgrade(): boolean {
+    return localStorage.getItem('pendingOAuthUpgrade') === 'true';
+  }
+
+  getOAuthRedirectPath(): string | null {
+    return localStorage.getItem('oauthRedirectPath');
   }
 }
 

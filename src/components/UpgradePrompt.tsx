@@ -78,18 +78,22 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({ onClose, onSuccess
     setError(null);
 
     try {
-      const result = await authService.signInWithOAuth('google');
+      const currentUser = await authService.getCurrentUser();
+      const isUpgrade = currentUser?.is_anonymous === true;
+
+      const result = await authService.signInWithOAuth('google', {
+        isUpgrade,
+        redirectPath: window.location.pathname,
+      });
 
       if (result.error) {
         setError(result.error.message);
+        setLoading(false);
         return;
       }
 
-      onSuccess();
-      onClose();
     } catch (err) {
       setError('Failed to sign in with Google. Please try again.');
-    } finally {
       setLoading(false);
     }
   };

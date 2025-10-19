@@ -3,11 +3,13 @@ import { AuthProvider, useAuth } from './hooks/useAuth';
 import { LoadingScreen } from './components/LoadingScreen';
 import { Viewfinder } from './components/camera/Viewfinder';
 import { AuthModal } from './components/AuthModal';
+import { authService } from './services/auth';
 
 function AppContent() {
   const { user, loading: authLoading } = useAuth();
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [oauthUpgradeProcessed, setOauthUpgradeProcessed] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -16,6 +18,23 @@ function AppContent() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const handleOAuthCallback = async () => {
+      if (!authLoading && user && !oauthUpgradeProcessed && authService.isPendingOAuthUpgrade()) {
+        const result = await authService.handleOAuthUpgradeCallback();
+        setOauthUpgradeProcessed(true);
+
+        if (result.success) {
+          console.log('OAuth upgrade completed successfully');
+        } else if (result.error) {
+          console.error('OAuth upgrade failed:', result.error);
+        }
+      }
+    };
+
+    handleOAuthCallback();
+  }, [authLoading, user, oauthUpgradeProcessed]);
 
   useEffect(() => {
     if (!authLoading && !user && !showLoadingScreen) {

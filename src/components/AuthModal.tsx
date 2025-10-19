@@ -88,15 +88,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
     setError(null);
 
     try {
-      const result = await authService.signInWithOAuth('google');
+      const result = await authService.signInWithOAuth('google', {
+        isUpgrade: false,
+        redirectPath: window.location.pathname,
+      });
 
       if (result.error) {
         setError(result.error.message);
+        setLoading(false);
         return;
       }
     } catch (err) {
       setError('Failed to sign in with Google. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
