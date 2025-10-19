@@ -5,11 +5,23 @@
 /* Prevent drag behavior on the entire app */
 body, #root {
   -webkit-user-drag: none;
+  touch-action: manipulation;
+}
+
+/* Allow text selection in form inputs */
+input, textarea, [contenteditable] {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+/* Prevent selection on non-interactive elements */
+img, button, .no-select {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  touch-action: manipulation;
 }
 
 /* Hide scrollbar while maintaining scroll functionality */
