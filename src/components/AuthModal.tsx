@@ -120,7 +120,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
             <div className="space-y-6">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-accent-cyan/10 rounded-full mb-3">
-                  <img src="/Waste Lens emblem.png" alt="Waste Lens Logo" className="w-10 h-10" />
+                  <img src="/Waste Lens emblem.png" alt="Waste Lens Logo" className="w-20 h-20" />
                 </div>
                 <h2 className="text-2xl font-bold text-brand-dark">Waste Lens</h2>
               </div>
