@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, Crown, User, LogIn } from 'lucide-react';
+import { X, Mail, Lock, Recycle, User, LogIn } from 'lucide-react';
 import { authService } from '../services/auth';
 
 interface UpgradePromptProps {
@@ -114,22 +114,22 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({ onClose, onSuccess
             <div className="space-y-6">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-accent-cyan/20 rounded-full mb-4">
-                  <Crown className="w-8 h-8 text-primary-accent-cyan" />
+                  <Recycle className="w-8 h-8 text-primary-accent-cyan" />
                 </div>
-                <h2 className="text-2xl font-bold text-secondary-white mb-2">Upgrade Your Account</h2>
+                <h2 className="text-2xl font-bold text-secondary-white mb-2">Upgrade Account</h2>
               </div>
 
               <div className="space-y-3">
                 <button
                   onClick={() => setView('signin')}
-                  className="w-full px-6 py-3 bg-primary-accent-cyan/10 text-primary-accent-cyan rounded-xl hover:bg-primary-accent-cyan/20 transition-colors font-medium"
+                  className="w-full px-6 py-3 bg-primary-accent-cyan text-white rounded-xl hover:bg-primary-accent-cyan/90 transition-colors font-medium"
                 >
                   Sign In with Email
                 </button>
 
                 <button
                   onClick={() => setView('signup')}
-                  className="w-full px-6 py-3 bg-transparent text-secondary-white/80 rounded-xl hover:bg-secondary-white/10 transition-colors font-medium"
+                  className="w-full px-6 py-3 bg-primary-accent-cyan/10 text-primary-accent-cyan rounded-xl hover:bg-primary-accent-cyan/20 transition-colors font-medium border-2 border-primary-accent-cyan/30"
                 >
                   Create Account
                 </button>
@@ -143,7 +143,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({ onClose, onSuccess
 
               <button
                 onClick={onClose}
-                className="w-full btn-primary"
+                className="w-full text-primary-accent-cyan hover:text-primary-accent-cyan/80 transition-colors font-medium"
               >
                 Maybe Later
               </button>
@@ -160,15 +160,15 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({ onClose, onSuccess
                   <ul className="space-y-1">
                     <li className="flex items-start gap-2">
                       <span className="text-secondary-gold mt-0.5">✓</span>
-                      <span>Access Agent Handle for AI-powered waste management</span>
+                      <span>Access concierge-styled agent experiences</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-secondary-gold mt-0.5">✓</span>
+                      <span>View Your Resell Items In Activate Hub</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-secondary-gold mt-0.5">✓</span>
                       <span>Sync data across all your devices</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-secondary-gold mt-0.5">✓</span>
-                      <span>Access your snap history anytime</span>
                     </li>
                   </ul>
                 </div>
