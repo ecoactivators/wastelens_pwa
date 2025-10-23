@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, Recycle, User, LogIn } from 'lucide-react';
+import { X, Mail, Lock, User, LogIn } from 'lucide-react';
 import { authService } from '../services/auth';
 
 interface UpgradePromptProps {
@@ -113,8 +113,8 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({ onClose, onSuccess
           {view === 'initial' && (
             <div className="space-y-6">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-accent-cyan/20 rounded-full mb-4">
-                  <Recycle className="w-8 h-8 text-primary-accent-cyan" />
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-accent-cyan/20 rounded-full mb-4">
+                  <img src="/Waste Lens emblem.png" alt="Waste Lens Logo" className="w-10 h-10" />
                 </div>
                 <h2 className="text-2xl font-bold text-secondary-white mb-2">Upgrade Account</h2>
               </div>

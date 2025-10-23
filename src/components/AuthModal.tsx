@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User, LogIn, Recycle } from 'lucide-react';
+import { X, Mail, Lock, User, LogIn } from 'lucide-react';
 import { authService } from '../services/auth';
 
 interface AuthModalProps {
@@ -119,8 +119,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
           {view === 'initial' && (
             <div className="space-y-6">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-accent-cyan/10 rounded-full mb-3">
-                  <Recycle className="w-8 h-8 text-primary-accent-cyan" />
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-accent-cyan/10 rounded-full mb-3">
+                  <img src="/Waste Lens emblem.png" alt="Waste Lens Logo" className="w-10 h-10" />
                 </div>
                 <h2 className="text-2xl font-bold text-brand-dark">Waste Lens</h2>
               </div>
