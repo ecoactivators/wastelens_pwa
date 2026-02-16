@@ -4,32 +4,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Waste Lens™ Brand Colors
-        primary: {
-          bg: '#001123',
-          accent: {
-            pink: '#cc36a5',
-            cyan: '#1ed0f3',
-            green: '#00d500',
-          }
-        },
-        secondary: {
-          teal: '#14a1bb',
-          navy: '#013655',
-          gold: '#e9d29b',
-          white: '#ffffff',
-          green: '#00d500',
-        },
-        // Semantic color mappings for easier usage
-        brand: {
-          dark: '#001123',
-          pink: '#cc36a5',
-          cyan: '#1ed0f3',
-          teal: '#14a1bb',
-          navy: '#013655',
-          gold: '#e9d29b',
-          green: '#00d500',
-        }
+        // Waste Lens™ Brand Colors - Flat naming for Tailwind compatibility
+        'primary-bg': '#001123',
+        'primary-accent-pink': '#cc36a5',
+        'primary-accent-cyan': '#1ed0f3',
+        'primary-accent-green': '#00d500',
+        'secondary-teal': '#14a1bb',
+        'secondary-navy': '#013655',
+        'secondary-gold': '#e9d29b',
+        'secondary-white': '#ffffff',
+        'secondary-green': '#00d500',
+        // Additional brand colors
+        'brand-dark': '#001123',
+        'brand-pink': '#cc36a5',
+        'brand-cyan': '#1ed0f3',
+        'brand-teal': '#14a1bb',
+        'brand-navy': '#013655',
+        'brand-gold': '#e9d29b',
+        'brand-green': '#00d500',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
