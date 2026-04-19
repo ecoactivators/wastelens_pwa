@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import L from 'leaflet';
+const L = (window as any).L;
 
 interface SmartBinLocation {
   id: string;
