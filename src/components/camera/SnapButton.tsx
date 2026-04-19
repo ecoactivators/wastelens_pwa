@@ -20,9 +20,9 @@ export const SnapButton: React.FC<SnapButtonProps> = ({
           isCapturing ? 'animate-capture' : ''
         }`}
       >
-        <img 
-          src="/icon-512.png" 
-          alt="Waste Lens™" 
+        <img
+          src="/Waste_Lens_(1).png"
+          alt="Waste Lens™"
           className="w-full h-full rounded-full object-cover"
         />
       </button>

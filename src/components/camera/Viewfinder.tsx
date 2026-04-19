@@ -8,11 +8,13 @@ import { useWasteAnalysis } from '../../hooks/useWasteAnalysis';
 import { CameraPermissionPrompt } from './CameraPermissionPrompt';
 import { ViewfinderOverlay } from './ViewfinderOverlay';
 import { IdleTraining } from './IdleTraining';
-import { SnapButton } from './SnapButton';
 import { FlashOverlay } from './FlashOverlay';
 import { PWAInstallPrompt } from '../PWAInstallPrompt';
 import { AnalysisResultDisplay } from '../AnalysisResultDisplay';
-import { ImageIcon, Zap } from 'lucide-react';
+import { WasteConcierge } from '../WasteConcierge';
+import { FindSmartBin } from '../FindSmartBin';
+import { UpgradePrompt } from '../UpgradePrompt';
+import { MapPin, Zap, MessageSquare } from 'lucide-react';
 
 export const Viewfinder: React.FC = () => {
   const { user } = useAuth();
@@ -21,7 +23,7 @@ export const Viewfinder: React.FC = () => {
   const { isCapturing, showFlash, triggerSnap } = useSnapCapture({ videoRef, location, userId: user?.id ?? null });
   const { recordSnapSuccess, updateActivity, shouldShowIdleTraining } = useWasteAgent(user?.id ?? null);
   const { isAnalyzing, analysisResult, error, analyzeWaste, clearAnalysis } = useWasteAnalysis();
-  
+
   const [showIdleTraining, setShowIdleTraining] = useState(false);
   const [showAnalysisView, setShowAnalysisView] = useState(false);
   const [capturedImageData, setCapturedImageData] = useState<string | null>(null);
@@ -29,27 +31,28 @@ export const Viewfinder: React.FC = () => {
   // @ts-expect-error
   const [idleTimer, setIdleTimer] = useState<NodeJS.Timeout | null>(null);
   const [idleStartTime, setIdleStartTime] = useState<number>(Date.now());
-  
-  // File input ref for camera roll selection
+  const [showConcierge, setShowConcierge] = useState(false);
+  const [showFindBin, setShowFindBin] = useState(false);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Handle idle state for training with agent logic
   const resetIdleTimer = () => {
     if (idleTimer) {
       clearTimeout(idleTimer);
     }
-    
+
     setShowIdleTraining(false);
     setIdleStartTime(Date.now());
     updateActivity();
-    
+
     const timer = setTimeout(() => {
       const idleTime = Date.now() - idleStartTime;
       if (shouldShowIdleTraining(idleTime)) {
         setShowIdleTraining(true);
       }
-    }, 2000); // Check after 2 seconds of idle
-    
+    }, 2000);
+
     setIdleTimer(timer);
   };
 
@@ -57,7 +60,7 @@ export const Viewfinder: React.FC = () => {
     if (permissionState.granted) {
       resetIdleTimer();
     }
-    
+
     return () => {
       if (idleTimer) {
         clearTimeout(idleTimer);
@@ -66,114 +69,65 @@ export const Viewfinder: React.FC = () => {
   }, [permissionState.granted]);
 
   const handleSnap = async () => {
-    console.log('📸 [Snap] Snap triggered!', { 
-      location,
-      cameraGranted: permissionState.granted,
-      videoElement: !!videoRef.current,
-      videoSrcObject: !!videoRef.current?.srcObject
-    });
-    
     const snapResult = await triggerSnap();
-    
+
     if (snapResult) {
-      console.log('📸 [Snap] Snap successful, transitioning to analyze...', {
-        snapId: snapResult.id,
-        hasImageData: !!snapResult.imageData,
-        imageSize: snapResult.imageData?.length
-      });
       setCapturedImageData(snapResult.imageData || null);
       recordSnapSuccess();
-      
-      // Transition to analyze view
       setShowAnalysisView(true);
-      
-      // Start analysis with image and location
+
       if (snapResult.imageData && user?.id) {
-        console.log('🤖 [ViewFinder] Starting waste analysis...');
         await analyzeWaste(snapResult.imageData, snapResult.id, user.id, location || undefined);
       }
-    } else {
-      console.error('📸 [Snap] Snap failed - no result returned');
     }
-    
-    resetIdleTimer(); // Reset idle state on interaction
+
+    resetIdleTimer();
   };
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       alert('Please select a valid image file');
       return;
     }
 
     try {
-      // Convert file to base64
       const reader = new FileReader();
       reader.onload = async (e) => {
         const imageData = e.target?.result as string;
-        
+
         if (imageData) {
           setCapturedImageData(imageData);
-          console.log('Image selected from camera roll, starting analysis...');
-          
-          // Record as successful snap for agent learning
           recordSnapSuccess();
-          
-          // Transition to analysis view
           setShowAnalysisView(true);
 
-          // Start analysis with selected image and location
           if (user?.id) {
             const tempSnapId = `upload_${Date.now()}`;
             await analyzeWaste(imageData, tempSnapId, user.id, location || undefined);
           }
         }
       };
-      
+
       reader.readAsDataURL(file);
     } catch (error) {
       console.error('Failed to process selected image:', error);
       alert('Failed to process the selected image. Please try again.');
     }
-    
-    // Clear the input value so the same file can be selected again
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  const handleSelectFromCameraRoll = () => {
-    fileInputRef.current?.click();
-  };
-
   const handleClearAnalysis = () => {
-    console.log('🔄 [Analysis] Clearing analysis and returning to camera view');
-    console.log('🔄 [Analysis] Camera state before clearing:', {
-      cameraGranted: permissionState.granted,
-      videoElement: !!videoRef.current,
-      videoSrcObject: !!videoRef.current?.srcObject
-    });
-    
     setShowAnalysisView(false);
     setCapturedImageData(null);
     clearAnalysis();
-    
-    // Re-request camera access after returning to viewfinder
+
     setTimeout(() => {
-      console.log('🔄 [Analysis] Camera state after clearing:', {
-        cameraGranted: permissionState.granted,
-        videoElement: !!videoRef.current,
-        videoSrcObject: !!videoRef.current?.srcObject,
-        videoReadyState: videoRef.current?.readyState,
-        videoPaused: videoRef.current?.paused
-      });
-      
-      // If videoRef is available but has no stream, restart camera
       if (videoRef.current && !videoRef.current.srcObject) {
-        console.log('🔄 [Analysis] Video element exists but no stream - restarting camera');
         requestCameraAccess();
       }
     }, 100);
@@ -183,12 +137,10 @@ export const Viewfinder: React.FC = () => {
     resetIdleTimer();
   };
 
-  // Show permission prompt if camera access is denied
   if (permissionState.denied) {
     return <CameraPermissionPrompt onRetry={requestCameraAccess} />;
   }
 
-  // Show loading state
   if (permissionState.loading) {
     return (
       <div className="min-h-screen bg-primary-bg flex items-center justify-center">
@@ -202,24 +154,11 @@ export const Viewfinder: React.FC = () => {
 
   return (
     <>
-      {/* Camera View - Always rendered but hidden when showing analysis */}
       <div
-        className={`relative min-h-screen bg-black overflow-hidden ${
-          showAnalysisView ? 'hidden' : ''
-        }`}
+        className={`relative min-h-screen bg-black overflow-hidden ${showAnalysisView ? 'hidden' : ''}`}
         onTouchStart={handleUserInteraction}
         onMouseMove={handleUserInteraction}
       >
-      {/*<div*/}
-      {/*    className={`relative min-h-screen bg-black overflow-hidden select-none ${*/}
-      {/*        showAnalysisView ? 'hidden' : ''*/}
-      {/*    }`}*/}
-      {/*    style={{ touchAction: 'none', WebkitUserDrag: 'none', userSelect: 'none' } as React.CSSProperties}*/}
-      {/*    onTouchStart={handleUserInteraction}*/}
-      {/*    onMouseMove={handleUserInteraction}*/}
-      {/*    onDragStart={(e) => e.preventDefault()}*/}
-      {/*>*/}
-        {/* Camera Video Feed */}
         <video
           ref={videoRef}
           autoPlay
@@ -227,65 +166,71 @@ export const Viewfinder: React.FC = () => {
           muted
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/*<video*/}
-        {/*    ref={videoRef}*/}
-        {/*    autoPlay*/}
-        {/*    playsInline*/}
-        {/*    muted*/}
-        {/*    className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"*/}
-        {/*    style={{ WebkitUserDrag: 'none' } as React.CSSProperties}*/}
-        {/*    onDragStart={(e) => e.preventDefault()}*/}
-        {/*/>*/}
-        
-        {/* Dark overlay for better UI visibility */}
+
         <div className="absolute inset-0 bg-black/20"></div>
-        
-        {/* Flash Overlay */}
+
         <FlashOverlay isVisible={showFlash} />
-        
-        {/* Viewfinder Overlay */}
         <ViewfinderOverlay />
-        
-        {/* Idle Training */}
         <IdleTraining isVisible={showIdleTraining} />
-        
-        {/* Snap Button */}
-        <SnapButton 
-          onSnap={handleSnap} 
-          disabled={!permissionState.granted} 
-          isCapturing={isCapturing}
-        />
-        
-        {/* Camera Roll Selection Button with Hover Text */}
-        <div className="absolute bottom-8 left-8 group">
-          <button
-            onClick={handleSelectFromCameraRoll}
-            className="w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-          >
-            <ImageIcon className="w-6 h-6 text-primary-accent-cyan" />
-            <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
-              Select Photo
-            </span>
-          </button>
+
+        <div className="absolute bottom-8 left-0 right-0 flex items-end justify-center" style={{ gap: '0', paddingLeft: '24px', paddingRight: '24px' }}>
+          <div className="flex-1 flex justify-center">
+            <div className="relative group">
+              <button
+                onClick={() => setShowFindBin(true)}
+                className="w-14 h-14 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+              >
+                <MapPin className="w-6 h-6 text-primary-accent-cyan" />
+              </button>
+              <span className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded-lg text-xs text-white whitespace-nowrap" style={{ background: 'rgba(0,17,35,0.9)', border: '1px solid rgba(87,235,221,0.3)' }}>
+                Find | Unlock Smart Bin
+              </span>
+            </div>
+          </div>
+
+          <div className="flex-none">
+            <button
+              onClick={handleSnap}
+              disabled={!permissionState.granted || isCapturing}
+              className={`w-20 h-20 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isCapturing ? 'animate-capture' : ''}`}
+            >
+              <img
+                src="/Waste_Lens_(1).png"
+                alt="Waste Lens™"
+                className="w-full h-full rounded-full object-cover"
+              />
+            </button>
+          </div>
+
+          <div className="flex-1 flex justify-center">
+            <div className="flex gap-4">
+              <div className="relative group">
+                <button
+                  onClick={() => setShowConcierge(true)}
+                  className="w-14 h-14 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                >
+                  <MessageSquare className="w-6 h-6 text-primary-accent-cyan" />
+                </button>
+                <span className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded-lg text-xs text-white whitespace-nowrap" style={{ background: 'rgba(0,17,35,0.9)', border: '1px solid rgba(87,235,221,0.3)' }}>
+                  Waste Concierge
+                </span>
+              </div>
+
+              <div className="relative group">
+                <button
+                  onClick={() => setShowUpgradePrompt(true)}
+                  className="w-14 h-14 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                >
+                  <Zap className="w-6 h-6 text-primary-accent-cyan" />
+                </button>
+                <span className="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 rounded-lg text-xs text-white whitespace-nowrap" style={{ background: 'rgba(0,17,35,0.9)', border: '1px solid rgba(87,235,221,0.3)' }}>
+                  Household Hub
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        
-        {/* Activate Hub Button with Hover Text */}
-        <div className="absolute bottom-8 right-8 group">
-          <button
-            onClick={() => {
-              console.log('Activate Hub clicked');
-              alert('Coming soon! Agentic AI-orchestrated diversion. A done-for-you experience!');
-            }}
-            className="w-16 h-16 bg-primary-bg/80 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex flex-col items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-          >
-            <Zap className="w-6 h-6 text-primary-accent-cyan" />
-            <span className="hidden group-hover:block text-secondary-white text-xs mt-1 absolute top-full whitespace-nowrap">
-              Activate Hub
-            </span>
-          </button>
-        </div>
-        
-        {/* Hidden file input for camera roll selection */}
+
         <input
           ref={fileInputRef}
           type="file"
@@ -293,11 +238,9 @@ export const Viewfinder: React.FC = () => {
           onChange={handleImageUpload}
           className="hidden"
         />
-        
-        {/* PWA Install Prompt */}
+
         <PWAInstallPrompt />
-        
-        {/* Status indicator for location (optional debug) */}
+
         {location && (
           <div className="absolute top-4 right-4 bg-primary-bg/80 backdrop-blur-sm rounded-lg px-3 py-1">
             <p className="text-secondary-gold text-xs">📍 Location ready</p>
@@ -305,7 +248,6 @@ export const Viewfinder: React.FC = () => {
         )}
       </div>
 
-      {/* Analysis View - Only rendered when needed */}
       {showAnalysisView && (
         <AnalysisResultDisplay
           isAnalyzing={isAnalyzing}
@@ -313,6 +255,34 @@ export const Viewfinder: React.FC = () => {
           error={error}
           capturedImage={capturedImageData}
           onClearAnalysis={handleClearAnalysis}
+          onOpenFindBin={() => { setShowFindBin(true); setShowAnalysisView(false); }}
+          onOpenUpgradePrompt={() => setShowUpgradePrompt(true)}
+        />
+      )}
+
+      {showConcierge && (
+        <WasteConcierge
+          onClose={() => setShowConcierge(false)}
+          onGoToCamera={() => setShowConcierge(false)}
+          onGoToHouseholdHub={() => { setShowConcierge(false); setShowUpgradePrompt(true); }}
+          onGoToFindBin={() => { setShowConcierge(false); setShowFindBin(true); }}
+        />
+      )}
+
+      {showFindBin && (
+        <FindSmartBin
+          onBack={() => setShowFindBin(false)}
+          onUnlockComplete={() => {
+            setShowFindBin(false);
+            setShowAnalysisView(false);
+          }}
+        />
+      )}
+
+      {showUpgradePrompt && (
+        <UpgradePrompt
+          onClose={() => setShowUpgradePrompt(false)}
+          onSuccess={() => setShowUpgradePrompt(false)}
         />
       )}
     </>

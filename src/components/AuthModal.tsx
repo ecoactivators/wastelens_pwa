@@ -119,8 +119,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
           {view === 'initial' && (
             <div className="space-y-6">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-accent-cyan/10 rounded-full mb-3">
-                  <img src="/Waste Lens emblem.png" alt="Waste Lens Logo" className="w-20 h-20" />
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-3">
+                  <img src="/Waste_Lens_(1).png" alt="Waste Lens Logo" className="w-20 h-20 rounded-full object-cover" />
                 </div>
                 <h2 className="text-2xl font-bold text-brand-dark">Waste Lens</h2>
               </div>
