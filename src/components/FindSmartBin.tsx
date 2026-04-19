@@ -134,7 +134,7 @@ export const FindSmartBin: React.FC<FindSmartBinProps> = ({ onBack, onUnlockComp
             style={{ boxShadow: '0 0 60px rgba(87,235,221,0.5), 0 0 120px rgba(87,235,221,0.2)', animation: 'binPulse 2s ease-in-out infinite' }}
           >
             <img
-              src="/Bin_Picture_3.png"
+              src="/Bin_Picture_3_(1).png"
               alt="Smart Bin"
               className="w-full h-full object-cover"
               onError={(e) => {
@@ -196,7 +196,7 @@ export const FindSmartBin: React.FC<FindSmartBinProps> = ({ onBack, onUnlockComp
             style={{ background: 'rgba(87,235,221,0.05)', border: '1px solid rgba(87,235,221,0.15)', minHeight: '220px' }}
           >
             <img
-              src="/Bin_Picture_3.png"
+              src="/Bin_Picture_3_(1).png"
               alt="Smart Bin"
               className="w-full object-cover rounded-2xl"
               style={{ maxHeight: '300px' }}
@@ -279,7 +279,7 @@ export const FindSmartBin: React.FC<FindSmartBinProps> = ({ onBack, onUnlockComp
                   </div>
                   <div className="mx-3 rounded-xl overflow-hidden flex items-center justify-center" style={{ height: '72px', background: 'rgba(87,235,221,0.05)' }}>
                     <img
-                      src="/Bin_Picture_3.png"
+                      src="/Bin_Picture_3_(1).png"
                       alt="Smart Bin"
                       className="w-full h-full object-cover"
                       onError={(e) => {
