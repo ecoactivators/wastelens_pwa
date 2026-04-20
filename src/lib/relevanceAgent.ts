@@ -76,5 +76,3 @@ export async function askWasteAgent(message: string): Promise<string> {
     throw err;
   }
 }
-
-export { askWasteAgent }
