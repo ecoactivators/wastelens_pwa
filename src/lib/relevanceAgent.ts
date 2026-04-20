@@ -11,17 +11,29 @@ type AnyObj = Record<string, unknown>;
 function extractAnswer(response: AnyObj): string | null {
   const updates = response.updates as AnyObj[] | undefined;
   const u0 = updates?.[0] as AnyObj | undefined;
+  const out = u0?.output as AnyObj | undefined;
+  const outOut = out?.output as AnyObj | undefined;
 
   const candidates: unknown[] = [
-    u0?.output && (u0.output as AnyObj).answer,
+    outOut?.answer,
+    out?.answer,
+    outOut?.content,
+    out?.content,
     u0?.content,
-    response.output && (response.output as AnyObj).answer,
-    response.answer,
-    response.message && (response.message as AnyObj).content,
   ];
 
   for (const c of candidates) {
     if (typeof c === 'string' && c.trim().length > 0) return c.trim();
+  }
+
+  const history = outOut?.history_items as unknown;
+  if (Array.isArray(history) && history.length > 0) {
+    for (let i = history.length - 1; i >= 0; i--) {
+      const item = history[i] as AnyObj;
+      if (item?.role === 'ai' && typeof item.message === 'string' && item.message.trim().length > 0) {
+        return (item.message as string).trim();
+      }
+    }
   }
 
   return null;
