@@ -6,16 +6,24 @@ const BASE_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`;
 const POLL_INTERVAL_MS = 2000;
 const TIMEOUT_MS = 30000;
 
-function extractAnswer(updates: unknown[]): string | null {
-  for (const update of updates) {
-    const u = update as Record<string, unknown>;
-    const output = u.output as Record<string, unknown> | undefined;
-    if (!output) continue;
-    if (typeof output.answer === 'string') return output.answer;
-    for (const val of Object.values(output)) {
-      if (typeof val === 'string' && val.length > 0) return val;
-    }
+type AnyObj = Record<string, unknown>;
+
+function extractAnswer(response: AnyObj): string | null {
+  const updates = response.updates as AnyObj[] | undefined;
+  const u0 = updates?.[0] as AnyObj | undefined;
+
+  const candidates: unknown[] = [
+    u0?.output && (u0.output as AnyObj).answer,
+    u0?.content,
+    response.output && (response.output as AnyObj).answer,
+    response.answer,
+    response.message && (response.message as AnyObj).content,
+  ];
+
+  for (const c of candidates) {
+    if (typeof c === 'string' && c.trim().length > 0) return c.trim();
   }
+
   return null;
 }
 
@@ -51,20 +59,15 @@ export async function askWasteAgent(message: string): Promise<string> {
       const pollRes = await fetch(pollUrl, { headers });
       if (!pollRes.ok) continue;
 
-      const pollData = await pollRes.json();
-      const updates = (pollData.updates ?? []) as unknown[];
+      const response = await pollRes.json() as AnyObj;
 
-      const completed = updates.some((u) => {
-        const upd = u as Record<string, unknown>;
-        return upd.type === 'chain-success' || upd.status === 'complete' || upd.status === 'completed';
-      });
-
-      if (completed || updates.length > 0) {
-        const answer = extractAnswer(updates);
+      if (response.type === 'complete') {
+        console.log('Relevance AI response:', response);
+        const answer = extractAnswer(response);
         if (answer) return answer;
+        console.warn('Could not extract answer from Relevance AI response:', response);
+        return "I got your message but had trouble reading my reply. Try again?";
       }
-
-      if (completed) break;
     }
 
     throw new Error('Waste Agent timed out after 30 seconds');
@@ -73,3 +76,6 @@ export async function askWasteAgent(message: string): Promise<string> {
     throw err;
   }
 }
+
+
+export { askWasteAgent }
