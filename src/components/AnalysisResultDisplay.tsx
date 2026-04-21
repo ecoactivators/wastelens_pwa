@@ -242,7 +242,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                       color: '#57ebdd',
                     }}
                   >
-                    Your Household Hub
+                    Household Hub
                   </button>
 
                   <button
@@ -254,7 +254,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                       color: '#57ebdd',
                     }}
                   >
-                    Find | Unlock Smart Bin
+                    Smart Bin Access
                   </button>
                 </div>
 

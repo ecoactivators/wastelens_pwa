@@ -159,14 +159,14 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
             className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
             style={chipStyle}
           >
-            Go to Household Hub
+            Household Hub
           </button>
           <button
             onClick={() => { onClose(); onGoToFindBin(); }}
             className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
             style={chipStyle}
           >
-            Find | Unlock Smart Bin
+            Smart Bin Access
           </button>
         </div>
 

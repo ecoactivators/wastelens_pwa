@@ -157,10 +157,10 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({ onClose, onSuccess
                 <p className="text-xs font-semibold mb-3" style={{ color: 'rgba(87,235,221,0.7)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Benefits</p>
                 <ul className="space-y-2.5">
                   {[
-                    'Access Household Hub + Unlock Smart Bins',
-                    'Earn Incentives that Convert (Cash, Gas, Groceries)',
-                    'Personalized Concierge Agent Experience',
-                    'Personalized Welcome Gift (shipped free to your home)',
+                    'Personalized Concierge Agent',
+                    'Smart Bin Access',
+                    'Incentives (Cash, Gas, Groceries)',
+                    'Welcome Gift (ships free)',
                   ].map((benefit, i) => (
                     <li key={i} className="flex items-start gap-2.5">
                       <span className="mt-0.5 flex-shrink-0 font-bold" style={{ color: '#57ebdd' }}>✓</span>
