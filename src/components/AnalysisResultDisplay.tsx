@@ -214,10 +214,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                   </div>
 
                   <button
-                    onClick={() => {
-                      const searchUrl = `https://www.google.com/maps/search/${encodeURIComponent(item.mapSearchTerm)}`;
-                      window.open(searchUrl, '_blank');
-                    }}
+                    onClick={() => { if (onOpenFindBin) onOpenFindBin(); }}
                     className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-200 hover:scale-[1.02]"
                     style={{
                       background: 'rgba(87,235,221,0.1)',
