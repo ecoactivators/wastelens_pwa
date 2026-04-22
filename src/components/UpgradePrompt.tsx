@@ -62,12 +62,22 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({ onClose, onSuccess
     setError(null);
     try {
       const fullName = `${firstName} ${lastName}`.trim();
+      const profileFields = {
+        firstName,
+        lastName,
+        street,
+        aptUnit: apt,
+        city,
+        state,
+        zip,
+        mobile,
+      };
       const currentUser = await authService.getCurrentUser();
       let result;
       if (currentUser?.is_anonymous) {
-        result = await authService.upgradeAnonymousToEmail(email, password, fullName);
+        result = await authService.upgradeAnonymousToEmail(email, password, fullName, profileFields);
       } else {
-        result = await authService.signUpWithEmail(email, password, fullName);
+        result = await authService.signUpWithEmail(email, password, fullName, profileFields);
       }
       if (result.error) {
         if (result.error.message.includes('already registered') || result.error.message.includes('already been registered')) {
@@ -158,8 +168,8 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({ onClose, onSuccess
                 <ul className="space-y-2.5">
                   {[
                     'Personalized Concierge Agent',
-                    'Smart Bin Access',
                     'Incentives (Cash, Gas, Groceries)',
+                    'Smart Bin Access',
                     'Welcome Gift (ships free)',
                   ].map((benefit, i) => (
                     <li key={i} className="flex items-start gap-2.5">

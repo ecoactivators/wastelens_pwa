@@ -136,7 +136,8 @@ export const FindSmartBin: React.FC<FindSmartBinProps> = ({ onBack, onUnlockComp
             <img
               src="/Bin_Picture_3_(1).png"
               alt="Smart Bin"
-              className="w-full h-full object-cover"
+              className="w-full h-full"
+              style={{ objectFit: 'contain', background: '#001123' }}
               onError={(e) => {
                 const el = e.target as HTMLImageElement;
                 el.style.display = 'none';
@@ -193,13 +194,13 @@ export const FindSmartBin: React.FC<FindSmartBinProps> = ({ onBack, onUnlockComp
         <div className="flex-1 flex flex-col px-5 pb-8 gap-5 overflow-y-auto">
           <div
             className="w-full rounded-2xl overflow-hidden flex items-center justify-center"
-            style={{ background: 'rgba(87,235,221,0.05)', border: '1px solid rgba(87,235,221,0.15)', minHeight: '220px' }}
+            style={{ background: 'rgba(87,235,221,0.05)', border: '1px solid rgba(87,235,221,0.15)', minHeight: '360px' }}
           >
             <img
               src="/Bin_Picture_3_(1).png"
               alt="Smart Bin"
-              className="w-full object-cover rounded-2xl"
-              style={{ maxHeight: '300px' }}
+              className="w-full h-full rounded-2xl"
+              style={{ maxHeight: '420px', objectFit: 'contain' }}
               onError={(e) => {
                 const el = e.target as HTMLImageElement;
                 el.style.display = 'none';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User, LogIn } from 'lucide-react';
+import { X, Mail, Lock, LogIn, ChevronDown } from 'lucide-react';
 import { authService } from '../services/auth';
 
 interface AuthModalProps {
@@ -9,6 +9,12 @@ interface AuthModalProps {
 
 type AuthView = 'initial' | 'signin' | 'signup';
 
+const US_STATES = [
+  'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA',
+  'ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK',
+  'OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY',
+];
+
 export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
   const [view, setView] = useState<AuthView>('initial');
   const [loading, setLoading] = useState(false);
@@ -16,7 +22,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [street, setStreet] = useState('');
+  const [apt, setApt] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [zip, setZip] = useState('');
+  const [mobile, setMobile] = useState('');
 
   const handleContinueAsGuest = async () => {
     setLoading(true);
@@ -32,7 +45,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
 
       onSuccess();
       onClose();
-    } catch (err) {
+    } catch {
       setError('Failed to continue as guest. Please try again.');
     } finally {
       setLoading(false);
@@ -54,7 +67,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
 
       onSuccess();
       onClose();
-    } catch (err) {
+    } catch {
       setError('Failed to sign in. Please try again.');
     } finally {
       setLoading(false);
@@ -67,43 +80,38 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
     setError(null);
 
     try {
-      const result = await authService.signUpWithEmail(email, password, fullName);
+      const fullName = `${firstName} ${lastName}`.trim();
+      const result = await authService.signUpWithEmail(email, password, fullName, {
+        firstName,
+        lastName,
+        street,
+        aptUnit: apt,
+        city,
+        state,
+        zip,
+        mobile,
+      });
 
       if (result.error) {
-        setError(result.error.message);
+        if (result.error.message.includes('already registered') || result.error.message.includes('already been registered')) {
+          setError('Email address is already registered');
+        } else {
+          setError(result.error.message);
+        }
         return;
       }
 
       onSuccess();
       onClose();
-    } catch (err) {
+    } catch {
       setError('Failed to sign up. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Google sign-in temporarily disabled - uncomment when ready to enable
-  // const handleGoogleSignIn = async () => {
-  //   setLoading(true);
-  //   setError(null);
-  //
-  //   try {
-  //     const result = await authService.signInWithOAuth('google', {
-  //       isUpgrade: false,
-  //       redirectPath: window.location.pathname,
-  //     });
-  //
-  //     if (result.error) {
-  //       setError(result.error.message);
-  //       setLoading(false);
-  //       return;
-  //     }
-  //   } catch (err) {
-  //     setError('Failed to sign in with Google. Please try again.');
-  //     setLoading(false);
-  //   }
-  // };
+  const inputClass = 'w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary-accent-cyan focus:outline-none text-gray-900 placeholder-gray-400 bg-white';
+  const labelClass = 'block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wide';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
@@ -115,7 +123,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
           <X className="w-6 h-6" />
         </button>
 
-        <div className="p-8">
+        <div className="p-8 max-h-[90vh] overflow-y-auto">
           {view === 'initial' && (
             <div className="space-y-6">
               <div className="text-center">
@@ -231,33 +239,100 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
           )}
 
           {view === 'signup' && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div className="text-center">
-                <h2 className="text-2xl font-bold text-brand-dark mb-2">Create Account</h2>
-                <p className="text-gray-600">Join Waste Lens today</p>
+                <h2 className="text-2xl font-bold text-brand-dark mb-1">Create Account</h2>
+                <p className="text-gray-600">Earn Money from Food Waste</p>
               </div>
 
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <form onSubmit={handleSignUp} className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className={labelClass}>First Name</label>
                     <input
                       type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary-accent-cyan focus:outline-none"
-                      placeholder="John Doe"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className={inputClass}
+                      placeholder="Jane"
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Last Name</label>
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className={inputClass}
+                      placeholder="Doe"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
-                  </label>
+                  <label className={labelClass}>Street</label>
+                  <input
+                    type="text"
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                    className={inputClass}
+                    placeholder="123 Main St"
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Apt or Unit Number</label>
+                  <input
+                    type="text"
+                    value={apt}
+                    onChange={(e) => setApt(e.target.value)}
+                    className={inputClass}
+                    placeholder="Apt 4B (optional)"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <div className="col-span-2 sm:col-span-1">
+                    <label className={labelClass}>City</label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      className={inputClass}
+                      placeholder="City"
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>State</label>
+                    <div className="relative">
+                      <select
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
+                        className={`${inputClass} appearance-none pr-8 cursor-pointer`}
+                      >
+                        <option value="">ST</option>
+                        {US_STATES.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Zip</label>
+                    <input
+                      type="text"
+                      value={zip}
+                      onChange={(e) => setZip(e.target.value)}
+                      className={inputClass}
+                      placeholder="00000"
+                      maxLength={10}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Email</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
@@ -265,16 +340,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary-accent-cyan focus:outline-none"
+                      className={`${inputClass} pl-10`}
                       placeholder="you@example.com"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
+                  <label className={labelClass}>
+                    Mobile <span className="text-gray-400 font-normal normal-case">(optional)</span>
                   </label>
+                  <input
+                    type="tel"
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value)}
+                    className={inputClass}
+                    placeholder="Mobile (optional)"
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Password</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
@@ -283,7 +369,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose, onSuccess }) => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
-                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary-accent-cyan focus:outline-none"
+                      className={`${inputClass} pl-10`}
                       placeholder="••••••••"
                     />
                   </div>

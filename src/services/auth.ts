@@ -7,6 +7,42 @@ export interface AuthResult {
   error: AuthError | null;
 }
 
+export interface ProfileFields {
+  firstName?: string;
+  lastName?: string;
+  street?: string;
+  aptUnit?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  mobile?: string;
+}
+
+async function upsertProfileFields(userId: string, email: string, fullName: string | undefined, fields: ProfileFields | undefined) {
+  if (!supabase || !fields) return;
+  try {
+    await supabase.from('user_profiles').upsert(
+      {
+        id: userId,
+        email,
+        full_name: fullName || null,
+        first_name: fields.firstName || null,
+        last_name: fields.lastName || null,
+        street: fields.street || null,
+        apt_unit: fields.aptUnit || null,
+        city: fields.city || null,
+        state: fields.state || null,
+        zip: fields.zip || null,
+        mobile: fields.mobile || null,
+        is_anonymous: false,
+      },
+      { onConflict: 'id' }
+    );
+  } catch (err) {
+    console.error('Failed to upsert profile fields:', err);
+  }
+}
+
 export class AuthService {
   async signInAnonymously(): Promise<AuthResult> {
     if (!supabase) {
@@ -37,7 +73,7 @@ export class AuthService {
     }
   }
 
-  async signUpWithEmail(email: string, password: string, fullName?: string): Promise<AuthResult> {
+  async signUpWithEmail(email: string, password: string, fullName?: string, profileFields?: ProfileFields): Promise<AuthResult> {
     if (!supabase) {
       return {
         user: null,
@@ -63,6 +99,9 @@ export class AuthService {
       }
 
       console.log('User signed up:', data.user?.id);
+      if (data.user?.id) {
+        await upsertProfileFields(data.user.id, email, fullName, profileFields);
+      }
       return { user: data.user, session: data.session, error: null };
     } catch (error) {
       console.error('Sign up failed:', error);
@@ -226,7 +265,7 @@ export class AuthService {
     };
   }
 
-  async upgradeAnonymousToEmail(email: string, password: string, fullName?: string): Promise<AuthResult> {
+  async upgradeAnonymousToEmail(email: string, password: string, fullName?: string, profileFields?: ProfileFields): Promise<AuthResult> {
     if (!supabase) {
       return {
         user: null,
@@ -260,6 +299,9 @@ export class AuthService {
       }
 
       console.log('Anonymous user upgraded to registered:', data.user?.id);
+      if (data.user?.id) {
+        await upsertProfileFields(data.user.id, email, fullName, profileFields);
+      }
       return { user: data.user, session: null, error: null };
     } catch (error) {
       console.error('Upgrade anonymous user failed:', error);

@@ -254,7 +254,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
                       color: '#57ebdd',
                     }}
                   >
-                    Smart Bin Access
+                    Smart Bins
                   </button>
                 </div>
 
