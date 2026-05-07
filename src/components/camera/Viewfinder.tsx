@@ -17,7 +17,7 @@ import { UpgradePrompt } from '../UpgradePrompt';
 import { Plus } from 'lucide-react';
 
 export const Viewfinder: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isAnonymous } = useAuth();
   const { permissionState, videoRef, requestCameraAccess } = useCamera();
   const { location } = useLocation();
   const { isCapturing, showFlash, triggerSnap } = useSnapCapture({ videoRef, location, userId: user?.id ?? null });
@@ -253,6 +253,8 @@ export const Viewfinder: React.FC = () => {
           onGoToCamera={() => setShowConcierge(false)}
           onGoToHouseholdHub={() => { setShowConcierge(false); setShowUpgradePrompt(true); }}
           onGoToFindBin={() => { setShowConcierge(false); setShowFindBin(true); }}
+          user={user}
+          isAnonymous={isAnonymous}
         />
       )}
 

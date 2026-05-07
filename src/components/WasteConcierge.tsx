@@ -1,12 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Send } from 'lucide-react';
+import { User } from '@supabase/supabase-js';
 import { askWasteAgent } from '../lib/relevanceAgent';
+import { supabase } from '../services/supabase';
 
 interface WasteConciergeProps {
   onClose: () => void;
   onGoToCamera: () => void;
   onGoToHouseholdHub: () => void;
   onGoToFindBin: () => void;
+  user: User | null;
+  isAnonymous: boolean;
 }
 
 interface Message {
@@ -16,12 +20,9 @@ interface Message {
   typing?: boolean;
 }
 
-const WELCOME: Message = {
-  id: 0,
-  role: 'agent',
-  content:
-    "What would you like to do next? You can tap one of the options above or ask me anything about your food waste.",
-};
+const GUEST_WELCOME = "Welcome! I'm your Waste Concierge. What would you like to know — ask me anything about waste.";
+const AUTH_WELCOME = (firstName: string) =>
+  `Hello ${firstName}, how can I help you today? Tap the quick menu above or ask me anything — type or speak your question.`;
 
 let msgId = 1;
 
@@ -30,8 +31,35 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
   onGoToCamera,
   onGoToHouseholdHub,
   onGoToFindBin,
+  user,
+  isAnonymous,
 }) => {
-  const [messages, setMessages] = useState<Message[]>([WELCOME]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [welcomeReady, setWelcomeReady] = useState(false);
+
+  useEffect(() => {
+    if (welcomeReady) return;
+
+    const loadWelcome = async () => {
+      let content = GUEST_WELCOME;
+
+      if (user && !isAnonymous) {
+        const { data } = await supabase
+          .from('user_profiles')
+          .select('first_name')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        const firstName = data?.first_name?.trim();
+        content = firstName ? AUTH_WELCOME(firstName) : AUTH_WELCOME('there');
+      }
+
+      setMessages([{ id: 0, role: 'agent', content }]);
+      setWelcomeReady(true);
+    };
+
+    loadWelcome();
+  }, [user, isAnonymous, welcomeReady]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
