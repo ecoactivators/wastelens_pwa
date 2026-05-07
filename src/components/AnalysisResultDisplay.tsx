@@ -131,7 +131,7 @@ export const AnalysisResultDisplay: React.FC<AnalysisResultDisplayProps> = ({
         <div className="absolute inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(0,17,35,0.85)' }}>
           <div className="text-center animate-fade-in">
             <div className="w-16 h-16 border-4 border-primary-accent-cyan border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-            <h2 className="text-xl font-semibold text-secondary-white mb-2">Analyzing with AI</h2>
+            <h2 className="text-xl font-semibold text-secondary-white mb-2">Waste Concierge Analyzing</h2>
           </div>
         </div>
       )}
