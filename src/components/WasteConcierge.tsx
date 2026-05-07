@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, MessageSquare, Send } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 import { askWasteAgent } from '../lib/relevanceAgent';
 
 interface WasteConciergeProps {
@@ -128,11 +128,8 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(87,235,221,0.15)', border: '1px solid rgba(87,235,221,0.3)' }}
-            >
-              <MessageSquare className="w-4 h-4" style={{ color: '#57ebdd' }} />
+            <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
+              <img src="/Waste Lens emblem (compressed).png" alt="Waste Lens" className="w-full h-full object-cover" />
             </div>
             <h2 className="text-lg font-bold text-white tracking-wide">Waste Concierge</h2>
           </div>
@@ -152,21 +149,21 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
             className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
             style={chipStyle}
           >
-            Snap next Waste Item
-          </button>
-          <button
-            onClick={() => { onClose(); onGoToHouseholdHub(); }}
-            className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
-            style={chipStyle}
-          >
-            Household Hub
+            Snap Trash
           </button>
           <button
             onClick={() => { onClose(); onGoToFindBin(); }}
             className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
             style={chipStyle}
           >
-            Smart Bin Access
+            Smart Bins
+          </button>
+          <button
+            onClick={() => { onClose(); onGoToHouseholdHub(); }}
+            className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+            style={chipStyle}
+          >
+            Rewards Hub
           </button>
         </div>
 
