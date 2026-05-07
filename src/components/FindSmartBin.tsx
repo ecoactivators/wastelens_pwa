@@ -127,40 +127,52 @@ export const FindSmartBin: React.FC<FindSmartBinProps> = ({ onBack, onUnlockComp
 
   if (step === 'unlock' && selectedBin) {
     return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center" style={{ background: '#001123' }}>
-        <div className="flex flex-col items-center gap-8 px-8">
-          <div
-            className="w-48 h-48 rounded-full overflow-hidden flex items-center justify-center"
-            style={{ boxShadow: '0 0 60px rgba(87,235,221,0.5), 0 0 120px rgba(87,235,221,0.2)', animation: 'binPulse 2s ease-in-out infinite' }}
+      <div className="fixed inset-0 z-50 flex flex-col" style={{ background: '#001123' }}>
+        <div className="px-5 pt-8 pb-4 flex-shrink-0">
+          <button
+            onClick={() => setStep('detail')}
+            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all hover:scale-105"
+            style={{ background: 'rgba(87,235,221,0.1)', border: '1px solid rgba(87,235,221,0.3)' }}
           >
-            <img
-              src="/Bin_Picture_3_(1).png"
-              alt="Smart Bin"
-              className="w-full h-full"
-              style={{ objectFit: 'contain', background: '#001123' }}
-              onError={(e) => {
-                const el = e.target as HTMLImageElement;
-                el.style.display = 'none';
-                if (el.parentElement) el.parentElement.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem">♻</div>`;
-              }}
-            />
-          </div>
+            <ArrowLeft className="w-5 h-5" style={{ color: '#57ebdd' }} />
+          </button>
+        </div>
 
-          <p className="text-white text-center text-lg font-medium leading-relaxed">
-            Smart Bin will remain unlocked for 20 seconds
-          </p>
-
-          <div className="relative w-24 h-24 flex items-center justify-center">
-            <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r={radius} fill="none" stroke="rgba(87,235,221,0.15)" strokeWidth="8" />
-              <circle
-                cx="50" cy="50" r={radius} fill="none"
-                stroke="#57ebdd" strokeWidth="8" strokeLinecap="round"
-                strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
-                style={{ transition: 'stroke-dashoffset 0.9s linear' }}
+        <div className="flex-1 flex flex-col items-center justify-center px-8">
+          <div className="flex flex-col items-center gap-8">
+            <div
+              className="w-48 h-48 rounded-full overflow-hidden flex items-center justify-center"
+              style={{ boxShadow: '0 0 60px rgba(87,235,221,0.5), 0 0 120px rgba(87,235,221,0.2)', animation: 'binPulse 2s ease-in-out infinite' }}
+            >
+              <img
+                src="/Bin_Picture_3_(1).png"
+                alt="Smart Bin"
+                className="w-full h-full"
+                style={{ objectFit: 'contain', background: '#001123' }}
+                onError={(e) => {
+                  const el = e.target as HTMLImageElement;
+                  el.style.display = 'none';
+                  if (el.parentElement) el.parentElement.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem">♻</div>`;
+                }}
               />
-            </svg>
-            <span className="text-white text-3xl font-bold z-10">{countdown}</span>
+            </div>
+
+            <p className="text-white text-center text-lg font-medium leading-relaxed">
+              Smart Bin will remain unlocked<br />for 20 seconds
+            </p>
+
+            <div className="relative w-24 h-24 flex items-center justify-center">
+              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r={radius} fill="none" stroke="rgba(87,235,221,0.15)" strokeWidth="8" />
+                <circle
+                  cx="50" cy="50" r={radius} fill="none"
+                  stroke="#57ebdd" strokeWidth="8" strokeLinecap="round"
+                  strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
+                  style={{ transition: 'stroke-dashoffset 0.9s linear' }}
+                />
+              </svg>
+              <span className="text-white text-3xl font-bold z-10">{countdown}</span>
+            </div>
           </div>
         </div>
 
@@ -253,9 +265,8 @@ export const FindSmartBin: React.FC<FindSmartBinProps> = ({ onBack, onUnlockComp
           className="flex-shrink-0 flex flex-col pb-6"
           style={{ background: 'rgba(0,17,35,0.97)', borderTop: '1px solid rgba(87,235,221,0.15)' }}
         >
-          <div className="flex items-center justify-between px-5 pt-4 pb-3">
-            <span className="text-white font-semibold text-sm">Near You</span>
-            <button className="text-xs font-medium" style={{ color: '#57ebdd' }}>See All</button>
+          <div className="px-5 pt-4 pb-3">
+            <span className="text-white font-semibold text-sm">Find Smart Bin</span>
           </div>
 
           <div className="overflow-x-auto px-5" style={{ scrollbarWidth: 'none' }}>
