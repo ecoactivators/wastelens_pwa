@@ -41,6 +41,7 @@ export interface WasteItem {
 
 export interface WasteAnalysisResponse {
   items: WasteItem[];
+  conciergeMessage?: string;
 }
 
 export interface AnalysisSession {
