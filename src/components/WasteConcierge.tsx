@@ -3,6 +3,7 @@ import { X, Send } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import { askWasteAgent } from '../lib/relevanceAgent';
 import { supabase } from '../services/supabase';
+import { WasteAnalysisResponse } from '../types/waste';
 
 interface WasteConciergeProps {
   onClose: () => void;
@@ -11,6 +12,7 @@ interface WasteConciergeProps {
   onGoToFindBin: () => void;
   user: User | null;
   isAnonymous: boolean;
+  analysisResult?: WasteAnalysisResponse | null;
 }
 
 interface Message {
@@ -33,6 +35,7 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
   onGoToFindBin,
   user,
   isAnonymous,
+  analysisResult,
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [welcomeReady, setWelcomeReady] = useState(false);
@@ -60,6 +63,24 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
 
     loadWelcome();
   }, [user, isAnonymous, welcomeReady]);
+  useEffect(() => {
+    if (!analysisResult || !welcomeReady) return;
+
+    const lines: string[] = [];
+
+    if (analysisResult.conciergeMessage) {
+      lines.push(analysisResult.conciergeMessage);
+    } else {
+      analysisResult.items.forEach((item) => {
+        lines.push(`**${item.itemName}** — ${item.disposalCategory}`);
+        item.disposalGuidance.forEach((g) => lines.push(`• ${g}`));
+      });
+    }
+
+    const content = lines.join('\n');
+    setMessages((prev) => [...prev, { id: msgId++, role: 'agent', content }]);
+  }, [analysisResult, welcomeReady]);
+
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);

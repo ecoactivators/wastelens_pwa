@@ -75,6 +75,7 @@ export const Viewfinder: React.FC = () => {
       setCapturedImageData(snapResult.imageData || null);
       recordSnapSuccess();
       setShowAnalysisView(true);
+      setShowConcierge(true);
 
       if (snapResult.imageData && user?.id) {
         await analyzeWaste(snapResult.imageData, snapResult.id, user.id, location || undefined);
@@ -102,6 +103,7 @@ export const Viewfinder: React.FC = () => {
           setCapturedImageData(imageData);
           recordSnapSuccess();
           setShowAnalysisView(true);
+          setShowConcierge(true);
 
           if (user?.id) {
             const tempSnapId = `upload_${Date.now()}`;
@@ -235,7 +237,7 @@ export const Viewfinder: React.FC = () => {
         `}</style>
       </div>
 
-      {showAnalysisView && (
+      {false && showAnalysisView && (
         <AnalysisResultDisplay
           isAnalyzing={isAnalyzing}
           analysisResult={analysisResult}
@@ -249,12 +251,13 @@ export const Viewfinder: React.FC = () => {
 
       {showConcierge && (
         <WasteConcierge
-          onClose={() => setShowConcierge(false)}
+          onClose={() => { setShowConcierge(false); setShowAnalysisView(false); clearAnalysis(); setCapturedImageData(null); }}
           onGoToCamera={() => setShowConcierge(false)}
           onGoToHouseholdHub={() => { setShowConcierge(false); setShowUpgradePrompt(true); }}
           onGoToFindBin={() => { setShowConcierge(false); setShowFindBin(true); }}
           user={user}
           isAnonymous={isAnonymous}
+          analysisResult={analysisResult}
         />
       )}
 
