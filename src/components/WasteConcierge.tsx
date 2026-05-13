@@ -22,9 +22,9 @@ interface Message {
   typing?: boolean;
 }
 
-const GUEST_WELCOME = "Welcome! I'm your Waste Concierge. What would you like to know — ask me anything about waste.";
+const GUEST_WELCOME = "Welcome! I'm the Waste Concierge. What would you like to know about Waste Lens or your trash — ask me anything or click a quick action above.";
 const AUTH_WELCOME = (firstName: string) =>
-  `Hello ${firstName}, how can I help you today? Tap the quick menu above or ask me anything — type or speak your question.`;
+  `Hello ${firstName}, how can I help you today? Tap a quick action above or ask me anything via chat.`;
 
 let msgId = 1;
 
