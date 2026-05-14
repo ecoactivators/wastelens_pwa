@@ -59,7 +59,7 @@ export class OpenAIService {
               ]
             }
           ],
-          max_tokens: 1500,
+          max_tokens: 1000,
           temperature: 0.1
         }),
       });
@@ -88,17 +88,10 @@ export class OpenAIService {
           .trim();
         
         result = JSON.parse(cleanedContent);
-
-        // Ensure conciergeMessage is present — build fallback from raw guidance if missing
-        if (!result.conciergeMessage && result.items?.length > 0) {
-          const firstItem = result.items[0];
-          const guidanceText = firstItem.disposalGuidance?.[0] ?? 'Please refer to your local disposal guidelines.';
-          result.conciergeMessage = `I see some items. Here's what to do:\n${guidanceText}\n\nAnything else I can help with?`;
-        }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (parseError) {
         console.error('Failed to parse OpenAI response:', content);
-        // Fallback if JSON parsing fails entirely
+        // Fallback if JSON parsing fails
         result = {
           items: [{
             itemName: 'Unknown item',
@@ -110,8 +103,7 @@ export class OpenAIService {
             confidenceScore: 0.1,
             fixResultsOption: true,
             agentHandleEligible: false
-          }],
-          conciergeMessage: "I wasn't able to analyze that photo clearly. Try taking another shot with better lighting — I'm here when you're ready."
+          }]
         };
       }
 

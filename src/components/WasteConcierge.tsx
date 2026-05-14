@@ -3,7 +3,6 @@ import { X, Send } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import { askWasteAgent } from '../lib/relevanceAgent';
 import { supabase } from '../services/supabase';
-import { WasteAnalysisResponse } from '../types/waste';
 
 interface WasteConciergeProps {
   onClose: () => void;
@@ -12,7 +11,6 @@ interface WasteConciergeProps {
   onGoToFindBin: () => void;
   user: User | null;
   isAnonymous: boolean;
-  analysisResult?: WasteAnalysisResponse | null;
 }
 
 interface Message {
@@ -22,9 +20,9 @@ interface Message {
   typing?: boolean;
 }
 
-const GUEST_WELCOME = "Welcome! I'm the Waste Concierge. What would you like to know about Waste Lens or your trash — ask me anything or click a quick action above.";
+const GUEST_WELCOME = "Welcome! I'm your Waste Concierge. What would you like to know — ask me anything about waste.";
 const AUTH_WELCOME = (firstName: string) =>
-  `Hello ${firstName}, how can I help you today? Tap a quick action above or ask me anything via chat.`;
+  `Hello ${firstName}, how can I help you today? Tap the quick menu above or ask me anything — type or speak your question.`;
 
 let msgId = 1;
 
@@ -35,7 +33,6 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
   onGoToFindBin,
   user,
   isAnonymous,
-  analysisResult,
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [welcomeReady, setWelcomeReady] = useState(false);
@@ -63,24 +60,6 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
 
     loadWelcome();
   }, [user, isAnonymous, welcomeReady]);
-  useEffect(() => {
-    if (!analysisResult || !welcomeReady) return;
-
-    const lines: string[] = [];
-
-    if (analysisResult.conciergeMessage) {
-      lines.push(analysisResult.conciergeMessage);
-    } else {
-      analysisResult.items.forEach((item) => {
-        lines.push(`**${item.itemName}** — ${item.disposalCategory}`);
-        item.disposalGuidance.forEach((g) => lines.push(`• ${g}`));
-      });
-    }
-
-    const content = lines.join('\n');
-    setMessages((prev) => [...prev, { id: msgId++, role: 'agent', content }]);
-  }, [analysisResult, welcomeReady]);
-
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
