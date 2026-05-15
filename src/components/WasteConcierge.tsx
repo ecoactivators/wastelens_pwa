@@ -4,6 +4,7 @@ import { User } from '@supabase/supabase-js';
 import { askWasteAgent } from '../lib/relevanceAgent';
 import { supabase } from '../services/supabase';
 import { useLocation } from '../hooks/useLocation';
+import { renderAgentMessage } from '../lib/messageRenderer';
 
 interface WasteConciergeProps {
   onClose: () => void;
@@ -252,7 +253,7 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
                 </div>
               ) : (
                 <div className="text-sm leading-relaxed" style={agentBubbleStyle}>
-                  {msg.content}
+                  {renderAgentMessage(msg.content)}
                 </div>
               )}
             </div>
