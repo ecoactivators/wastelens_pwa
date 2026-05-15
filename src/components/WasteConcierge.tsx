@@ -3,6 +3,7 @@ import { X, Send } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import { askWasteAgent } from '../lib/relevanceAgent';
 import { supabase } from '../services/supabase';
+import { useLocation } from '../hooks/useLocation';
 
 interface WasteConciergeProps {
   onClose: () => void;
@@ -34,8 +35,14 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
   user,
   isAnonymous,
 }) => {
+  const { location, requestLocation } = useLocation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [welcomeReady, setWelcomeReady] = useState(false);
+
+  useEffect(() => {
+    requestLocation();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (welcomeReady) return;
@@ -81,7 +88,7 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
     setMessages((prev) => [...prev, userMsg, typingMsg]);
 
     try {
-      const reply = await askWasteAgent(trimmed);
+      const reply = await askWasteAgent(trimmed, location);
       setMessages((prev) =>
         prev
           .filter((m) => !m.typing)

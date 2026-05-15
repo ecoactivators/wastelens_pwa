@@ -8,6 +8,17 @@ const TIMEOUT_MS = 30000;
 
 type AnyObj = Record<string, unknown>;
 
+export interface AgentLocation {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+}
+
+function buildLocationContext(location: AgentLocation): string {
+  const coords = `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`;
+  return `[System context — do not repeat to user] User's current location: coordinates ${coords}. Use this automatically for any location-based queries (nearby facilities, recycling centres, drop-off points, etc.) without asking the user for their location.`;
+}
+
 function extractAnswer(response: AnyObj): string | null {
   const updates = response.updates as AnyObj[] | undefined;
   const u0 = updates?.[0] as AnyObj | undefined;
@@ -39,8 +50,26 @@ function extractAnswer(response: AnyObj): string | null {
   return null;
 }
 
-export async function askWasteAgent(message: string): Promise<string> {
+export async function askWasteAgent(message: string, location?: AgentLocation | null): Promise<string> {
   try {
+    const locationContext = location ? buildLocationContext(location) : null;
+    const enrichedContent = locationContext
+      ? `${locationContext}\n\nUser message: ${message}`
+      : message;
+
+    const metadata = location
+      ? {
+          location: {
+            coordinates: `${location.latitude.toFixed(6)}, ${location.longitude.toFixed(6)}`,
+            latitude: location.latitude,
+            longitude: location.longitude,
+            source: 'browser_gps',
+          },
+        }
+      : undefined;
+
+    console.log('[WasteAgent] sending with location:', location ? `${location.latitude}, ${location.longitude}` : 'none');
+
     const triggerRes = await fetch(`${BASE_URL}/agents/trigger`, {
       method: 'POST',
       headers: {
@@ -48,8 +77,9 @@ export async function askWasteAgent(message: string): Promise<string> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: { role: 'user', content: message },
+        message: { role: 'user', content: enrichedContent },
         agent_id: AGENT_ID,
+        ...(metadata && { metadata }),
       }),
     });
 
