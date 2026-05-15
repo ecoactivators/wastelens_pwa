@@ -201,22 +201,14 @@ export const Viewfinder: React.FC<ViewfinderProps> = ({
         </div>
 
         {/* Back to Concierge */}
-        <div
-          className="absolute z-40 flex flex-col items-end gap-3"
-          style={{ right: '20px', bottom: '44px' }}
-        >
+        <div className="absolute top-6 left-6 z-40">
           <button
             onClick={onDismiss}
             aria-label="Back to Waste Concierge"
-            className="rounded-full flex items-center justify-center fab-pulse"
-            style={{
-              width: '56px',
-              height: '56px',
-              background: '#001123',
-              border: '2px solid #57ebdd',
-            }}
+            className="w-12 h-12 backdrop-blur-sm border-2 border-primary-accent-cyan rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+            style={{ background: 'rgba(0,17,35,0.7)' }}
           >
-            <ArrowLeft className="w-6 h-6" style={{ color: '#57ebdd' }} />
+            <ArrowLeft className="w-5 h-5 text-primary-accent-cyan" />
           </button>
         </div>
 
@@ -236,15 +228,6 @@ export const Viewfinder: React.FC<ViewfinderProps> = ({
           </div>
         )}
 
-        <style>{`
-          @keyframes fabPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(87,235,221,0.4), 0 0 0 rgba(87,235,221,0); }
-            50% { box-shadow: 0 0 32px rgba(87,235,221,0.75), 0 0 0 6px rgba(87,235,221,0.08); }
-          }
-          .fab-pulse {
-            animation: fabPulse 2s ease-in-out infinite;
-          }
-        `}</style>
       </div>
 
       {showAnalysisView && (

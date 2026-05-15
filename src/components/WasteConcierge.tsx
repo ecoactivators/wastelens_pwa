@@ -24,7 +24,7 @@ interface Message {
 
 const GUEST_WELCOME = "Welcome! I'm your Waste Concierge. What would you like to know — ask me anything about waste.";
 const AUTH_WELCOME = (firstName: string) =>
-  `Hello ${firstName}, how can I help you today? Tap the quick menu above or ask me anything — type or speak your question.`;
+  `Hi again ${firstName}, how can I help? Tap an option above or ask me anything about your trash or Waste Lens.`;
 
 let msgId = 1;
 
@@ -43,7 +43,7 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     requestLocation();
@@ -82,6 +82,7 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
     const trimmed = text.trim();
     if (!trimmed || busy) return;
     setInput('');
+    if (inputRef.current) inputRef.current.style.height = 'auto';
     setBusy(true);
 
     const userMsg: Message = { id: msgId++, role: 'user', content: trimmed };
@@ -111,8 +112,17 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') send(input);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send(input);
+    }
+  };
+
+  const handleTextareaInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    const el = e.currentTarget;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
   };
 
   const handleLogOut = async () => {
@@ -172,7 +182,7 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
       <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
-            <img src="/Waste Lens emblem (compressed).png" alt="Waste Lens" className="w-full h-full object-cover" />
+            <img src="/Waste_Lens_(1).png" alt="Waste Lens" className="w-full h-full object-cover" />
           </div>
           <h2 className="text-lg font-bold text-white tracking-wide">Waste Concierge</h2>
         </div>
@@ -277,16 +287,17 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
             padding: '4px 4px 4px 16px',
           }}
         >
-          <input
+          <textarea
             ref={inputRef}
-            type="text"
+            rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask your Waste Concierge..."
+            onInput={handleTextareaInput}
+            placeholder="Ask Waste Concierge..."
             disabled={busy}
             className="flex-1 bg-transparent text-white text-sm outline-none wc-input"
-            style={{ border: 'none', padding: '8px 0' }}
+            style={{ border: 'none', padding: '8px 0', resize: 'none', overflow: 'hidden', lineHeight: '1.4' }}
           />
           <button
             onClick={() => send(input)}
