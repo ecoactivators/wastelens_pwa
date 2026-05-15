@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send } from 'lucide-react';
+import { Send, Menu, LogOut } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import { askWasteAgent } from '../lib/relevanceAgent';
 import { supabase } from '../services/supabase';
+import { authService } from '../services/auth';
 import { useLocation } from '../hooks/useLocation';
 import { renderAgentMessage } from '../lib/messageRenderer';
 
 interface WasteConciergeProps {
-  onClose: () => void;
   onGoToCamera: () => void;
   onGoToHouseholdHub: () => void;
   onGoToFindBin: () => void;
@@ -29,7 +29,6 @@ const AUTH_WELCOME = (firstName: string) =>
 let msgId = 1;
 
 export const WasteConcierge: React.FC<WasteConciergeProps> = ({
-  onClose,
   onGoToCamera,
   onGoToHouseholdHub,
   onGoToFindBin,
@@ -39,6 +38,12 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
   const { location, requestLocation } = useLocation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [welcomeReady, setWelcomeReady] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [input, setInput] = useState('');
+  const [busy, setBusy] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     requestLocation();
@@ -68,10 +73,6 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
 
     loadWelcome();
   }, [user, isAnonymous, welcomeReady]);
-  const [input, setInput] = useState('');
-  const [busy, setBusy] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -114,6 +115,17 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
     if (e.key === 'Enter') send(input);
   };
 
+  const handleLogOut = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    setMenuOpen(false);
+    try {
+      await authService.signOut();
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   const userBubbleStyle: React.CSSProperties = {
     background: '#57ebdd',
     color: '#001123',
@@ -148,152 +160,175 @@ export const WasteConcierge: React.FC<WasteConciergeProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 flex flex-col"
+      style={{
+        background: 'rgba(0, 17, 35, 0.97)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
+            <img src="/Waste Lens emblem (compressed).png" alt="Waste Lens" className="w-full h-full object-cover" />
+          </div>
+          <h2 className="text-lg font-bold text-white tracking-wide">Waste Concierge</h2>
+        </div>
+        <button
+          onClick={() => setMenuOpen((o) => !o)}
+          className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+          style={{ background: 'rgba(87,235,221,0.1)', border: '1px solid rgba(87,235,221,0.2)' }}
+          aria-label="Open menu"
+        >
+          <Menu className="w-4 h-4" style={{ color: '#57ebdd' }} />
+        </button>
+      </div>
+
+      {/* Preset action chips */}
+      <div className="flex flex-wrap px-6 flex-shrink-0" style={{ gap: '8px' }}>
+        <button
+          onClick={onGoToCamera}
+          className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+          style={chipStyle}
+        >
+          Snap Trash
+        </button>
+        <button
+          onClick={onGoToFindBin}
+          className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+          style={chipStyle}
+        >
+          Smart Bins
+        </button>
+        <button
+          onClick={onGoToHouseholdHub}
+          className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
+          style={chipStyle}
+        >
+          Rewards Hub
+        </button>
+      </div>
+
+      {/* Divider */}
       <div
-        className="relative w-full max-w-md mx-0 sm:mx-4 rounded-t-3xl sm:rounded-2xl flex flex-col"
+        className="mx-6 flex-shrink-0"
         style={{
-          background: 'rgba(0, 17, 35, 0.90)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(87, 235, 221, 0.25)',
-          boxShadow: '0 -8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(87,235,221,0.08)',
-          height: '70vh',
-          maxHeight: '70vh',
+          height: '1px',
+          background: 'rgba(87, 235, 221, 0.15)',
+          marginTop: '12px',
+          marginBottom: '12px',
+        }}
+      />
+
+      {/* Conversation */}
+      <div
+        className="wc-scroll flex-1 flex flex-col min-h-0"
+        style={{
+          overflowY: 'auto',
+          padding: '16px',
+          gap: '10px',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
         }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
-              <img src="/Waste Lens emblem (compressed).png" alt="Waste Lens" className="w-full h-full object-cover" />
-            </div>
-            <h2 className="text-lg font-bold text-white tracking-wide">Waste Concierge</h2>
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            {msg.typing ? (
+              <div className="flex items-center gap-1.5" style={agentBubbleStyle}>
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="block w-2 h-2 rounded-full"
+                    style={{
+                      background: '#57ebdd',
+                      animation: `typingDot 1.2s ease-in-out infinite`,
+                      animationDelay: `${i * 0.2}s`,
+                    }}
+                  />
+                ))}
+              </div>
+            ) : msg.role === 'user' ? (
+              <div className="text-sm leading-relaxed" style={userBubbleStyle}>
+                {msg.content}
+              </div>
+            ) : (
+              <div className="text-sm leading-relaxed" style={agentBubbleStyle}>
+                {renderAgentMessage(msg.content)}
+              </div>
+            )}
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
-            style={{ background: 'rgba(87,235,221,0.1)', border: '1px solid rgba(87,235,221,0.2)' }}
-          >
-            <X className="w-4 h-4" style={{ color: '#57ebdd' }} />
-          </button>
-        </div>
+        ))}
+        <div ref={bottomRef} />
+      </div>
 
-        {/* Preset action chips */}
-        <div className="flex flex-wrap px-6 flex-shrink-0" style={{ gap: '8px' }}>
-          <button
-            onClick={() => { onClose(); onGoToCamera(); }}
-            className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
-            style={chipStyle}
-          >
-            Snap Trash
-          </button>
-          <button
-            onClick={() => { onClose(); onGoToFindBin(); }}
-            className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
-            style={chipStyle}
-          >
-            Smart Bins
-          </button>
-          <button
-            onClick={() => { onClose(); onGoToHouseholdHub(); }}
-            className="transition-all duration-200 hover:scale-[1.03] active:scale-[0.97]"
-            style={chipStyle}
-          >
-            Rewards Hub
-          </button>
-        </div>
-
-        {/* Divider */}
+      {/* Input pill */}
+      <div className="px-4 py-4 flex-shrink-0">
         <div
-          className="mx-6 flex-shrink-0"
+          className="flex items-center"
           style={{
-            height: '1px',
-            background: 'rgba(87, 235, 221, 0.15)',
-            marginTop: '12px',
-            marginBottom: '12px',
-          }}
-        />
-
-        {/* Conversation */}
-        <div
-          className="wc-scroll flex-1 flex flex-col min-h-0"
-          style={{
-            overflowY: 'auto',
-            padding: '16px',
-            gap: '10px',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
+            background: 'rgba(10, 20, 35, 0.6)',
+            border: '1px solid rgba(87, 235, 221, 0.2)',
+            borderRadius: '24px',
+            padding: '4px 4px 4px 16px',
           }}
         >
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              {msg.typing ? (
-                <div
-                  className="flex items-center gap-1.5"
-                  style={agentBubbleStyle}
-                >
-                  {[0, 1, 2].map((i) => (
-                    <span
-                      key={i}
-                      className="block w-2 h-2 rounded-full"
-                      style={{
-                        background: '#57ebdd',
-                        animation: `typingDot 1.2s ease-in-out infinite`,
-                        animationDelay: `${i * 0.2}s`,
-                      }}
-                    />
-                  ))}
-                </div>
-              ) : msg.role === 'user' ? (
-                <div className="text-sm leading-relaxed" style={userBubbleStyle}>
-                  {msg.content}
-                </div>
-              ) : (
-                <div className="text-sm leading-relaxed" style={agentBubbleStyle}>
-                  {renderAgentMessage(msg.content)}
-                </div>
-              )}
-            </div>
-          ))}
-          <div ref={bottomRef} />
-        </div>
-
-        {/* Input pill */}
-        <div className="px-4 py-4 flex-shrink-0">
-          <div
-            className="flex items-center"
-            style={{
-              background: 'rgba(10, 20, 35, 0.6)',
-              border: '1px solid rgba(87, 235, 221, 0.2)',
-              borderRadius: '24px',
-              padding: '4px 4px 4px 16px',
-            }}
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask your Waste Concierge..."
+            disabled={busy}
+            className="flex-1 bg-transparent text-white text-sm outline-none wc-input"
+            style={{ border: 'none', padding: '8px 0' }}
+          />
+          <button
+            onClick={() => send(input)}
+            disabled={busy || !input.trim()}
+            className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 hover:scale-110 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{ background: '#57ebdd' }}
           >
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask your Waste Concierge..."
-              disabled={busy}
-              className="flex-1 bg-transparent text-white text-sm outline-none wc-input"
-              style={{ border: 'none', padding: '8px 0' }}
-            />
-            <button
-              onClick={() => send(input)}
-              disabled={busy || !input.trim()}
-              className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200 hover:scale-110 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: '#57ebdd' }}
-            >
-              <Send className="w-4 h-4" style={{ color: '#001123' }} />
-            </button>
-          </div>
+            <Send className="w-4 h-4" style={{ color: '#001123' }} />
+          </button>
         </div>
       </div>
+
+      {/* Hamburger menu — superimposed, nothing else moves */}
+      {menuOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div
+            className="absolute z-50 rounded-2xl overflow-hidden"
+            style={{
+              top: '64px',
+              right: '16px',
+              minWidth: '180px',
+              background: 'rgba(0, 17, 35, 0.97)',
+              border: '1px solid rgba(87,235,221,0.25)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+            }}
+          >
+            <button
+              onClick={handleLogOut}
+              disabled={isLoggingOut}
+              className="w-full flex items-center gap-3 px-5 py-4 text-sm font-medium transition-colors hover:bg-white/5 disabled:opacity-50"
+              style={{ color: '#57ebdd' }}
+            >
+              <LogOut className="w-4 h-4" />
+              {isLoggingOut ? 'Logging out...' : 'Log out'}
+            </button>
+          </div>
+        </>
+      )}
 
       <style>{`
         @keyframes typingDot {

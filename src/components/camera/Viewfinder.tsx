@@ -11,13 +11,20 @@ import { IdleTraining } from './IdleTraining';
 import { FlashOverlay } from './FlashOverlay';
 import { PWAInstallPrompt } from '../PWAInstallPrompt';
 import { AnalysisResultDisplay } from '../AnalysisResultDisplay';
-import { WasteConcierge } from '../WasteConcierge';
-import { FindSmartBin } from '../FindSmartBin';
-import { UpgradePrompt } from '../UpgradePrompt';
-import { Plus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
-export const Viewfinder: React.FC = () => {
-  const { user, isAnonymous } = useAuth();
+interface ViewfinderProps {
+  onDismiss: () => void;
+  onOpenFindBin: () => void;
+  onOpenUpgradePrompt: () => void;
+}
+
+export const Viewfinder: React.FC<ViewfinderProps> = ({
+  onDismiss,
+  onOpenFindBin,
+  onOpenUpgradePrompt,
+}) => {
+  const { user } = useAuth();
   const { permissionState, videoRef, requestCameraAccess } = useCamera();
   const { location } = useLocation();
   const { isCapturing, showFlash, triggerSnap } = useSnapCapture({ videoRef, location, userId: user?.id ?? null });
@@ -31,9 +38,6 @@ export const Viewfinder: React.FC = () => {
   // @ts-expect-error
   const [idleTimer, setIdleTimer] = useState<NodeJS.Timeout | null>(null);
   const [idleStartTime, setIdleStartTime] = useState<number>(Date.now());
-  const [showConcierge, setShowConcierge] = useState(false);
-  const [showFindBin, setShowFindBin] = useState(false);
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -111,8 +115,8 @@ export const Viewfinder: React.FC = () => {
       };
 
       reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Failed to process selected image:', error);
+    } catch (err) {
+      console.error('Failed to process selected image:', err);
       alert('Failed to process the selected image. Please try again.');
     }
 
@@ -125,12 +129,7 @@ export const Viewfinder: React.FC = () => {
     setShowAnalysisView(false);
     setCapturedImageData(null);
     clearAnalysis();
-
-    setTimeout(() => {
-      if (videoRef.current && !videoRef.current.srcObject) {
-        requestCameraAccess();
-      }
-    }, 100);
+    onDismiss();
   };
 
   const handleUserInteraction = () => {
@@ -138,7 +137,19 @@ export const Viewfinder: React.FC = () => {
   };
 
   if (permissionState.denied) {
-    return <CameraPermissionPrompt onRetry={requestCameraAccess} />;
+    return (
+      <div className="relative w-full h-full min-h-screen bg-primary-bg">
+        <CameraPermissionPrompt onRetry={requestCameraAccess} />
+        <button
+          onClick={onDismiss}
+          className="absolute top-6 left-6 w-10 h-10 rounded-full flex items-center justify-center z-50"
+          style={{ background: 'rgba(0,17,35,0.7)', border: '2px solid #57ebdd' }}
+          aria-label="Back to Concierge"
+        >
+          <ArrowLeft className="w-5 h-5" style={{ color: '#57ebdd' }} />
+        </button>
+      </div>
+    );
   }
 
   if (permissionState.loading) {
@@ -189,13 +200,14 @@ export const Viewfinder: React.FC = () => {
           </div>
         </div>
 
+        {/* Back to Concierge */}
         <div
           className="absolute z-40 flex flex-col items-end gap-3"
           style={{ right: '20px', bottom: '44px' }}
         >
           <button
-            onClick={() => setShowConcierge(true)}
-            aria-label="Open Waste Concierge"
+            onClick={onDismiss}
+            aria-label="Back to Waste Concierge"
             className="rounded-full flex items-center justify-center fab-pulse"
             style={{
               width: '56px',
@@ -204,7 +216,7 @@ export const Viewfinder: React.FC = () => {
               border: '2px solid #57ebdd',
             }}
           >
-            <Plus className="w-6 h-6" style={{ color: '#57ebdd' }} />
+            <ArrowLeft className="w-6 h-6" style={{ color: '#57ebdd' }} />
           </button>
         </div>
 
@@ -242,36 +254,8 @@ export const Viewfinder: React.FC = () => {
           error={error}
           capturedImage={capturedImageData}
           onClearAnalysis={handleClearAnalysis}
-          onOpenFindBin={() => { setShowFindBin(true); setShowAnalysisView(false); }}
-          onOpenUpgradePrompt={() => setShowUpgradePrompt(true)}
-        />
-      )}
-
-      {showConcierge && (
-        <WasteConcierge
-          onClose={() => setShowConcierge(false)}
-          onGoToCamera={() => setShowConcierge(false)}
-          onGoToHouseholdHub={() => { setShowConcierge(false); setShowUpgradePrompt(true); }}
-          onGoToFindBin={() => { setShowConcierge(false); setShowFindBin(true); }}
-          user={user}
-          isAnonymous={isAnonymous}
-        />
-      )}
-
-      {showFindBin && (
-        <FindSmartBin
-          onBack={() => setShowFindBin(false)}
-          onUnlockComplete={() => {
-            setShowFindBin(false);
-            setShowAnalysisView(false);
-          }}
-        />
-      )}
-
-      {showUpgradePrompt && (
-        <UpgradePrompt
-          onClose={() => setShowUpgradePrompt(false)}
-          onSuccess={() => setShowUpgradePrompt(false)}
+          onOpenFindBin={onOpenFindBin}
+          onOpenUpgradePrompt={onOpenUpgradePrompt}
         />
       )}
     </>

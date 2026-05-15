@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { LoadingScreen } from './components/LoadingScreen';
-import { Viewfinder } from './components/camera/Viewfinder';
+import { WasteConciergeScreen } from './components/WasteConciergeScreen';
 import { AuthModal } from './components/AuthModal';
 import { authService } from './services/auth';
 
@@ -59,7 +59,7 @@ function AppContent() {
     );
   }
 
-  return <Viewfinder />;
+  return <WasteConciergeScreen />;
 }
 
 function App() {
