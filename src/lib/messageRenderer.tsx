@@ -14,45 +14,53 @@ type Segment =
   | { type: 'phone'; display: string; digits: string }
   | { type: 'bareUrl'; url: string };
 
-const MD_LINK = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
-const PHONE = /(?:Call:\s*)(\(\d{3}\)\s*\d{3}-\d{4})/g;
-const BARE_URL = /(?<!\()https?:\/\/[^\s)>]+/g;
+// Markdown link: [text](url)
+const MD_LINK_SRC = '\\[([^\\]]+)\\]\\((https?:\\/\\/[^)]+)\\)';
+
+// Phone numbers in common formats, optionally preceded by a label
+// Matches: (843) 448-4050 | 843-448-4050 | 843.448.4050 | 8434484050
+// Optional label prefix: Phone: | Call: | Tel: | phone | call | tel
+const PHONE_SRC =
+  '(?:(?:Phone|Call|Tel|phone|call|tel)[:\\s]+)?' +
+  '(?:\\(\\d{3}\\)[\\s\\-.]?\\d{3}[\\-.]\\d{4}' +   // (NNN) NNN-NNNN
+  '|\\d{3}[\\-.]\\d{3}[\\-.]\\d{4}' +               // NNN-NNN-NNNN or NNN.NNN.NNNN
+  '|\\d{10})';                                        // NNNNNNNNNN
+
+// Bare URL not inside a markdown link
+const BARE_URL_SRC = '(?<!\\()https?:\\/\\/[^\\s)>]+';
+
+const COMBINED = new RegExp(
+  `(${MD_LINK_SRC})|(${PHONE_SRC})|(${BARE_URL_SRC})`,
+  'g'
+);
+
+// Identifies which capture group fired
+const MD_LINK_RE = new RegExp(`^${MD_LINK_SRC}$`);
+const PHONE_RE = new RegExp(
+  '^(?:(?:Phone|Call|Tel|phone|call|tel)[:\\s]+)?' +
+  '(?:\\(\\d{3}\\)[\\s\\-.]?\\d{3}[\\-.]\\d{4}' +
+  '|\\d{3}[\\-.]\\d{3}[\\-.]\\d{4}' +
+  '|\\d{10})$'
+);
 
 function parseSegments(text: string): Segment[] {
-  // Build a combined pattern that tags each match type
-  const combined = new RegExp(
-    `(${MD_LINK.source})|(${PHONE.source})|(${BARE_URL.source})`,
-    'g'
-  );
-
   const segments: Segment[] = [];
   let last = 0;
 
-  for (const match of text.matchAll(combined)) {
+  for (const match of text.matchAll(COMBINED)) {
     const start = match.index ?? 0;
-
     if (start > last) {
       segments.push({ type: 'text', value: text.slice(last, start) });
     }
 
     const full = match[0];
 
-    if (full.startsWith('[')) {
-      // Markdown link: [text](url)
-      const inner = full.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
-      if (inner) {
-        segments.push({ type: 'mdLink', text: inner[1], url: inner[2] });
-      } else {
-        segments.push({ type: 'text', value: full });
-      }
-    } else if (/^Call:\s*/i.test(full)) {
-      const phoneMatch = full.match(/(\(\d{3}\)\s*\d{3}-\d{4})/);
-      if (phoneMatch) {
-        const digits = phoneMatch[1].replace(/\D/g, '');
-        segments.push({ type: 'phone', display: full, digits });
-      } else {
-        segments.push({ type: 'text', value: full });
-      }
+    if (MD_LINK_RE.test(full)) {
+      const inner = full.match(MD_LINK_RE)!;
+      segments.push({ type: 'mdLink', text: inner[1], url: inner[2] });
+    } else if (PHONE_RE.test(full)) {
+      const digits = full.replace(/\D/g, '');
+      segments.push({ type: 'phone', display: full, digits });
     } else {
       segments.push({ type: 'bareUrl', url: full });
     }
