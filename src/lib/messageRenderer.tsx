@@ -12,7 +12,9 @@ type Segment =
   | { type: 'text'; value: string }
   | { type: 'mdLink'; text: string; url: string }
   | { type: 'phone'; display: string; digits: string }
-  | { type: 'bareUrl'; url: string };
+  | { type: 'bareUrl'; url: string }
+  | { type: 'bold'; children: Segment[] }
+  | { type: 'italic'; children: Segment[] };
 
 // Markdown link: [text](url)
 const MD_LINK_SRC = '\\[([^\\]]+)\\]\\((https?:\\/\\/[^)]+)\\)';
@@ -42,6 +44,8 @@ const PHONE_RE = new RegExp(
   '|\\d{3}[\\-.]\\d{3}[\\-.]\\d{4}' +
   '|\\d{10})$'
 );
+
+const INLINE_TAG_RE = /(<b>[\s\S]*?<\/b>|<i>[\s\S]*?<\/i>)/;
 
 function parseSegments(text: string): Segment[] {
   const segments: Segment[] = [];
@@ -75,36 +79,70 @@ function parseSegments(text: string): Segment[] {
   return segments;
 }
 
+function parseLineSegments(line: string): Segment[] {
+  const parts = line.split(INLINE_TAG_RE);
+  const result: Segment[] = [];
+
+  for (const part of parts) {
+    if (part.startsWith('<b>') && part.endsWith('</b>')) {
+      const inner = part.slice(3, -4);
+      result.push({ type: 'bold', children: parseSegments(inner) });
+    } else if (part.startsWith('<i>') && part.endsWith('</i>')) {
+      const inner = part.slice(3, -4);
+      result.push({ type: 'italic', children: parseSegments(inner) });
+    } else if (part.length > 0) {
+      result.push(...parseSegments(part));
+    }
+  }
+
+  return result;
+}
+
+function renderSegment(seg: Segment, key: string): React.ReactNode {
+  switch (seg.type) {
+    case 'text':
+      return <React.Fragment key={key}>{seg.value}</React.Fragment>;
+    case 'mdLink':
+      return (
+        <a key={key} href={seg.url} target="_blank" rel="noopener noreferrer" style={LINK_STYLE}>
+          {seg.text}
+        </a>
+      );
+    case 'phone':
+      return (
+        <a key={key} href={`tel:+1${seg.digits}`} style={LINK_STYLE}>
+          {seg.display}
+        </a>
+      );
+    case 'bareUrl':
+      return (
+        <a key={key} href={seg.url} target="_blank" rel="noopener noreferrer" style={LINK_STYLE}>
+          {seg.url}
+        </a>
+      );
+    case 'bold':
+      return (
+        <strong key={key}>
+          {seg.children.map((child, i) => renderSegment(child, `${key}-b${i}`))}
+        </strong>
+      );
+    case 'italic':
+      return (
+        <em key={key}>
+          {seg.children.map((child, i) => renderSegment(child, `${key}-i${i}`))}
+        </em>
+      );
+  }
+}
+
 export function renderAgentMessage(content: string): React.ReactNode[] {
   const lines = content.split('\n');
 
   return lines.flatMap((line, lineIdx) => {
-    const segments = parseSegments(line);
-    const nodes: React.ReactNode[] = segments.map((seg, i) => {
-      const key = `${lineIdx}-${i}`;
-      switch (seg.type) {
-        case 'text':
-          return <React.Fragment key={key}>{seg.value}</React.Fragment>;
-        case 'mdLink':
-          return (
-            <a key={key} href={seg.url} target="_blank" rel="noopener noreferrer" style={LINK_STYLE}>
-              {seg.text}
-            </a>
-          );
-        case 'phone':
-          return (
-            <a key={key} href={`tel:+1${seg.digits}`} style={LINK_STYLE}>
-              {seg.display}
-            </a>
-          );
-        case 'bareUrl':
-          return (
-            <a key={key} href={seg.url} target="_blank" rel="noopener noreferrer" style={LINK_STYLE}>
-              {seg.url}
-            </a>
-          );
-      }
-    });
+    const segments = parseLineSegments(line);
+    const nodes: React.ReactNode[] = segments.map((seg, i) =>
+      renderSegment(seg, `${lineIdx}-${i}`)
+    );
 
     if (lineIdx < lines.length - 1) {
       nodes.push(<br key={`br-${lineIdx}`} />);
