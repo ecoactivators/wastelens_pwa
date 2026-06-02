@@ -4,7 +4,6 @@ export interface SnapMetadata {
   latitude?: number;
   longitude?: number;
   imageData?: string;
-  imageUrl?: string;
 }
 
 export interface LocationData {
