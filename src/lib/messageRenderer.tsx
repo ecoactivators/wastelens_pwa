@@ -45,7 +45,7 @@ const PHONE_RE = new RegExp(
   '|\\d{10})$'
 );
 
-const INLINE_TAG_RE = /(<b>[\s\S]*?<\/b>|<i>[\s\S]*?<\/i>|\*\*[\s\S]*?\*\*|\*[\s\S]*?\*)/;
+const INLINE_TAG_RE = /(<b>[\s\S]*?<\/b>|<i>[\s\S]*?<\/i>)/;
 
 function parseSegments(text: string): Segment[] {
   const segments: Segment[] = [];
@@ -89,12 +89,6 @@ function parseLineSegments(line: string): Segment[] {
       result.push({ type: 'bold', children: parseSegments(inner) });
     } else if (part.startsWith('<i>') && part.endsWith('</i>')) {
       const inner = part.slice(3, -4);
-      result.push({ type: 'italic', children: parseSegments(inner) });
-    } else if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
-      const inner = part.slice(2, -2);
-      result.push({ type: 'bold', children: parseSegments(inner) });
-    } else if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
-      const inner = part.slice(1, -1);
       result.push({ type: 'italic', children: parseSegments(inner) });
     } else if (part.length > 0) {
       result.push(...parseSegments(part));
