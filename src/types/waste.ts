@@ -3,7 +3,8 @@ export interface SnapMetadata {
   timestamp: number;
   latitude?: number;
   longitude?: number;
-  imageData?: string; // base64 when captured
+  imageData?: string;
+  imageUrl?: string;
 }
 
 export interface LocationData {

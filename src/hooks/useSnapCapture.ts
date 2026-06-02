@@ -135,6 +135,7 @@ export const useSnapCapture = ({ videoRef, location, userId }: UseSnapCapturePro
         latitude: snapRecord.latitude ?? undefined,
         longitude: snapRecord.longitude ?? undefined,
         imageData,
+        imageUrl,
       };
 
       console.log('📸 [useSnapCapture] Snap metadata created:', {

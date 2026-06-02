@@ -80,8 +80,8 @@ export const Viewfinder: React.FC<ViewfinderProps> = ({
       recordSnapSuccess();
       setShowAnalysisView(true);
 
-      if (snapResult.imageData && user?.id) {
-        await analyzeWaste(snapResult.imageData, snapResult.id, user.id, location || undefined);
+      if (snapResult.imageUrl && user?.id) {
+        await analyzeWaste(snapResult.imageUrl, snapResult.id, user.id, location || undefined);
       }
     }
 
